@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, jsonify, request, redirect, url_for
+from flask import Flask, render_template, Response, jsonify, request
 import cv2
 import mediapipe as mp
 import math
@@ -26,13 +26,13 @@ def calculate_3d_distance(point1, point2):
     return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2 + (point1[2] - point2[2]) ** 2)
 
 # 얼굴 정보 불러오는 함수
-def load_face_data():
+def load_face_data(user_id):
     try:
         with open(json_file, 'r') as f:
             face_data = json.load(f)
-            return face_data
+            return face_data.get(user_id, {}).get('eye_distance')
     except (FileNotFoundError, json.JSONDecodeError):
-        return {}
+        return None
 
 @app.route('/')
 def index():
@@ -93,6 +93,71 @@ def video_feed():
     cv2.destroyAllWindows()
     return jsonify(detection_status)
 
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    user_id = data.get('user_id')
+
+    # eyes.json 파일에서 기존 등록된 userId 확인
+    try:
+        with open(json_file, 'r') as f:
+            face_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        face_data = {}
+
+    # 이미 등록된 userId가 있는지 확인
+    if user_id in face_data:
+        return jsonify({"error": "이미 등록된 아이디입니다."})
+
+    # user_id가 유효하지 않을 경우
+    if not user_id:
+        return jsonify({"error": "Invalid user ID."})
+
+    cap.open(0)  # 카메라 다시 오픈
+    initial_eye_distance = None
+    frame_count = 0
+    required_frames = 30  # 안정적으로 얼굴을 인식해야 하는 프레임 수
+
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            return jsonify({"error": "Failed to capture video."})
+
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = face_mesh.process(rgb_frame)
+
+        if results.multi_face_landmarks:
+            frame_count += 1
+            if frame_count >= required_frames:
+                for face_landmarks in results.multi_face_landmarks:
+                    left_eye = face_landmarks.landmark[33]
+                    right_eye = face_landmarks.landmark[263]
+
+                    left_eye_coords = (left_eye.x, left_eye.y, left_eye.z)
+                    right_eye_coords = (right_eye.x, right_eye.y, right_eye.z)
+
+                    eye_distance = calculate_3d_distance(left_eye_coords, right_eye_coords)
+                    if initial_eye_distance is None:
+                        initial_eye_distance = eye_distance
+                        # 새로운 user_id와 eye_distance 저장
+                        face_data[user_id] = {
+                            'eye_distance': initial_eye_distance
+                        }
+                        with open(json_file, 'w') as f:
+                            json.dump(face_data, f)
+                        cap.release()
+                        cv2.destroyAllWindows()
+                        return jsonify({"message": f"Face data saved for user {user_id}."})
+        else:
+            frame_count = 0  # 얼굴이 감지되지 않으면 카운트 초기화
+
+        if cv2.waitKey(5) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+    return jsonify({"error": "Failed to save face data."})
+
 @app.route('/login', methods=['POST'])
 def login():
     cap.open(0)  # 카메라 다시 오픈
@@ -100,9 +165,10 @@ def login():
     required_frames = 30  # 안정적으로 얼굴을 인식해야 하는 프레임 수
 
     # eyes.json 파일에서 모든 저장된 얼굴 정보 불러오기
-    face_data = load_face_data()
-
-    if not face_data:
+    try:
+        with open(json_file, 'r') as f:
+            face_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({"error": "등록된 얼굴 정보가 없습니다."})
 
     while cap.isOpened():
@@ -131,7 +197,9 @@ def login():
                         if abs(stored_eye_distance - eye_distance) < 0.05:  # 허용 오차 범위 지정
                             cap.release()
                             cv2.destroyAllWindows()
-                            return jsonify({"redirect_url": url_for('yoga')})  # 성공 시 yoga.html로 이동
+                            return jsonify({"message": f"Login successful for user {user_id}."})
+                    
+                    return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
         else:
             frame_count = 0  # 얼굴이 감지되지 않으면 카운트 초기화
 
@@ -140,11 +208,8 @@ def login():
 
     cap.release()
     cv2.destroyAllWindows()
-    return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
+    return jsonify({"error": "Failed to login."})
 
-@app.route('/yoga')
-def yoga():
-    return render_template('yoga.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
