@@ -65,6 +65,11 @@ while cap.isOpened():
             if index_finger_up and middle_finger_up and ring_finger_up and pinky_finger_down:
                 cv2.putText(image, "3 Detected", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 print("숫자 3 감지됨!")
+                # 'q' 키 누르지 않아도 감지되면 알아서 프로그램 종료
+                cap.release()
+                cv2.destroyAllWindows()
+                hands.close()
+                exit()  # 프로그램 완전히 종료
             else:
                 print("숫자 3이 감지되지 않음.")
 
