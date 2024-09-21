@@ -86,6 +86,18 @@ def register():
     data = request.json
     user_id = data.get('user_id')
 
+    # eyes.json 파일에서 기존 등록된 userId 확인
+    try:
+        with open(json_file, 'r') as f:
+            face_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        face_data = {}
+
+    # 이미 등록된 userId가 있는지 확인
+    if user_id in face_data:
+        return jsonify({"error": "이미 등록된 아이디입니다."})
+
+    # user_id가 유효하지 않을 경우
     if not user_id:
         return jsonify({"error": "Invalid user ID."})
 
@@ -115,10 +127,9 @@ def register():
                     eye_distance = calculate_3d_distance(left_eye_coords, right_eye_coords)
                     if initial_eye_distance is None:
                         initial_eye_distance = eye_distance
-                        face_data = {
-                            user_id: {
-                                'eye_distance': initial_eye_distance
-                            }
+                        # 새로운 user_id와 eye_distance 저장
+                        face_data[user_id] = {
+                            'eye_distance': initial_eye_distance
                         }
                         with open(json_file, 'w') as f:
                             json.dump(face_data, f)

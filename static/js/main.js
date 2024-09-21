@@ -34,7 +34,8 @@ function promptUserId() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                alert(data.error);
+                alert(data.error);  // "이미 등록된 아이디입니다." 메시지 표시
+                promptUserId();     // 다시 프롬프트 실행
             } else {
                 alert(data.message);
             }
