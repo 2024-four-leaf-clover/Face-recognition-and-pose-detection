@@ -1,0 +1,71 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR'
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+#container{
+    display: grid;
+    grid-template-rows: 100px 595px 50px;
+    background-color: beige;
+}
+.item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.nav{
+    display: grid;
+    grid-template-columns: 1fr 5.5fr 1fr;
+    background-color: white;
+}
+.nDiv{
+    justify-content: center;
+    align-items: center;
+}
+#logo{
+    float: right;
+    object-fit: contain;
+}
+.content{
+    display: grid;
+    grid-template-columns: 1fr 5.5fr 1fr;
+}
+.cCenter{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+#ccGridL{
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    padding-left: 20px;
+}
+#tDivL{
+    display: flex;
+    align-items: self-end;
+}
+#mText{
+    font-weight: 400;
+    font-size: 45px;
+    margin: 0 0 10px 0;
+}
+#sText{
+    margin: 10px 0 0 0;
+}
+#ccGridR{
+    display: flex;
+    width: 120%;
+    justify-content: center;
+    align-items: center;
+}
+#posture{
+    width: 100%;
+    object-fit: contain;
+}
+
