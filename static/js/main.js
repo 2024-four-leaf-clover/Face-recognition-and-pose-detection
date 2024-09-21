@@ -3,15 +3,19 @@ window.onload = function() {
     .then(response => response.json())
     .then(data => {
         if (data.detected) {
-            promptUserId();
+            if (data.action === 'register') {
+                promptUserId('/register');  // 회원가입: 아이디 입력 프롬프트 실행
+            } else if (data.action === 'login') {
+                loginUser();  // 로그인: 얼굴 인식으로 직접 로그인
+            }
         } else {
-            alert("검지 인식에 실패했습니다.");
+            alert("손 모양 인식에 실패했습니다.");
         }
     })
     .catch(error => console.error("Error:", error));
 };
 
-function promptUserId() {
+function promptUserId(endpoint) {
     let userId;
     while (true) {
         userId = prompt("아이디를 입력해주세요 (영어와 숫자의 조합으로 6자 이상, 첫 시작은 영어)");
@@ -24,7 +28,7 @@ function promptUserId() {
             continue;
         }
 
-        fetch('/register', {
+        fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,8 +38,8 @@ function promptUserId() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                alert(data.error);  // "이미 등록된 아이디입니다." 메시지 표시
-                promptUserId();     // 다시 프롬프트 실행
+                alert(data.error);  // 이미 등록된 아이디가 있으면 메시지 표시
+                promptUserId(endpoint);  // 다시 프롬프트 실행
             } else {
                 alert(data.message);
             }
@@ -46,4 +50,26 @@ function promptUserId() {
         });
         break;
     }
+}
+
+function loginUser() {
+    // 검지와 중지를 펼쳤을 때는 아이디를 입력하지 않고 바로 얼굴 인식을 통해 로그인 진행
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);  // 얼굴 불일치 등의 에러 메시지 표시
+        } else {
+            alert(data.message);  // 로그인 성공 메시지
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+    });
 }
