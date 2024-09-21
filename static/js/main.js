@@ -1,4 +1,8 @@
 window.onload = function() {
+    startVideoFeed();
+};
+
+function startVideoFeed() {
     fetch('/video_feed')
     .then(response => response.json())
     .then(data => {
@@ -13,7 +17,7 @@ window.onload = function() {
         }
     })
     .catch(error => console.error("Error:", error));
-};
+}
 
 function promptUserId(endpoint) {
     let userId;
@@ -64,8 +68,9 @@ function loginUser() {
     .then(data => {
         if (data.error) {
             alert(data.error);  // 얼굴 불일치 등의 에러 메시지 표시
-        } else {
-            alert(data.message);  // 로그인 성공 메시지
+            startVideoFeed();  // 얼굴 인식 실패 시 다시 손가락 감지로 돌아감
+        } else if (data.redirect_url) {
+            window.location.href = data.redirect_url;  // 얼굴 인식 성공 시 yoga.html로 이동
         }
     })
     .catch(error => {
