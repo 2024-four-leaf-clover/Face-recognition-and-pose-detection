@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, jsonify, request
+from flask import Flask, render_template, Response, jsonify, request, redirect, url_for
 import cv2
 import mediapipe as mp
 import math
@@ -197,7 +197,8 @@ def login():
                         if abs(stored_eye_distance - eye_distance) < 0.05:  # 허용 오차 범위 지정
                             cap.release()
                             cv2.destroyAllWindows()
-                            return jsonify({"message": f"Login successful for user {user_id}."})
+                            # 로그인 성공 시 yoga.html로 이동
+                            return redirect(url_for('yoga'))
                     
                     return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
         else:
@@ -210,6 +211,9 @@ def login():
     cv2.destroyAllWindows()
     return jsonify({"error": "Failed to login."})
 
+@app.route('/yoga')
+def yoga():
+    return render_template('yoga.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

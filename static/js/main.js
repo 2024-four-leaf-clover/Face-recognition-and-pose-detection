@@ -51,7 +51,6 @@ function promptUserId(endpoint) {
         break;
     }
 }
-
 function loginUser() {
     // 검지와 중지를 펼쳤을 때는 아이디를 입력하지 않고 바로 얼굴 인식을 통해 로그인 진행
     fetch('/login', {
@@ -60,11 +59,18 @@ function loginUser() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);  // 얼굴 불일치 등의 에러 메시지 표시
+    .then(response => {
+        if (response.redirected) {
+            // Flask에서 리다이렉트된 경우, 해당 URL로 이동
+            window.location.href = response.url;
         } else {
+            return response.json();
+        }
+    })
+    .then(data => {
+        if (data && data.error) {
+            alert(data.error);  // 얼굴 불일치 등의 에러 메시지 표시
+        } else if (data) {
             alert(data.message);  // 로그인 성공 메시지
         }
     })
