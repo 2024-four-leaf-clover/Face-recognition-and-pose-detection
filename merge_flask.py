@@ -221,8 +221,9 @@ def login():
                         stored_eye_distance = user_data.get('eye_distance')
                         if abs(stored_eye_distance - eye_distance) < 0.05:
                             cap.release()
-                            return redirect(url_for('yoga'))
-
+                            return redirect(url_for('yoga'))  # 로그인 성공 시 리다이렉트
+                        
+                    # 얼굴 정보가 일치하지 않으면 카메라 재실행하도록 에러 반환
                     return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
         else:
             frame_count = 0
