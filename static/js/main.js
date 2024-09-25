@@ -55,13 +55,15 @@ function promptUserId(endpoint) {
 }
 
 function startCamera() {
-    // 카메라 피드를 다시 띄우기
+    // 카메라 피드를 다시 띄움
     fetch('/video_feed')
     .then(response => response.json())
     .then(data => {
         if (data.detected) {
             if (data.action === 'login') {
                 loginUser();  // 손가락 제스처에 따라 로그인 진행
+            } else if (data.action === 'register') {
+                promptUserId('/register');  // 검지 손가락만 펼쳤을 때 회원가입
             }
         }
     })
@@ -77,7 +79,8 @@ function loginUser() {
     })
     .then(response => {
         if (response.redirected) {
-            window.location.href = response.url;  // 리다이렉션된 URL로 이동
+            // 로그인 성공 시 리다이렉트된 URL로 이동
+            window.location.href = response.url;
         } else {
             return response.json();
         }
@@ -85,6 +88,10 @@ function loginUser() {
     .then(data => {
         if (data && data.error) {
             alert(data.error);  // 에러 메시지 표시
+            if (data.error === "얼굴 정보가 일치하지 않습니다.") {
+                // 얼굴 정보가 일치하지 않으면 카메라를 다시 띄움
+                startCamera();
+            }
         } else if (data) {
             alert(data.message);  // 성공 메시지
         }
