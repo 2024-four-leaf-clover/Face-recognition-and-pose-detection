@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle"></title>
+    <link rel="stylesheet" href="/static/css/game.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="container">
+        <div class="item nav">
+            <div class="nDiv nLeft">
+                <a href="yoga.html">
+                    <img src="/static/img/logo.png" id="logo">
+                </a>
+            </div>
+            <div class="nDiv nCenter"></div>
+            <div class="nDiv nRight"></div>
+        </div>
+        <div class="item content">
+            <div class="mbx none"></div>
+            <div class="mbx main">
+                <div class="section">
+                    <div class="bx bx_step">
+                        <p class="step_txt" id="stepText">STEP2</p>
+                    </div>
+                    <div class="bx bx_profile">
+                        <div class="myProfile">
+                            <div class="pro p_img">
+                                img
+                            </div>
+                            <div class="pro p_user">
+                                <div class="user u_id">
+                                    <p><b>네잎클로버</b></p>
+                                </div>
+                                <div class="user u_lv">
+                                    <p>Lv.9</p>
+                                </div>
+                            </div>
+                            <div class="pro p_time">
+                                <p>5S</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="article">
+                    <!-- div class="posture p_ai">
+                        AI posture
+                    </div>    
+                    <div class="posture p_my">
+                        My posture
+                    </div>   -->    
+                    <img id="video" src="{{ url_for('video_feed') }}" width="960" height="500">         
+                </div>
+            </div>
+            <div class="mbx aside">
+                <div class="asd as_step">
+                    <div class="step">
+                        <p class="st_text" id="yogaName">{{ pose_name }}</p>
+                    </div>
+                </div>
+                <div class="asd as_status">
+                    <div class="as status">
+                        <div class="step">
+                            <p class="st_text">진행사황</p>
+                        </div>
+                    </div>
+                    <div class="as bar">
+                        <div class="br bx_bar">
+                            <div class="bxbar"></div>
+                            <div class="bxbar"></div>
+                            <div class="bxbar"></div>
+                        </div>
+                        <div class="br bx_txt">
+                            <div class="bxtxt">
+                                <p>STEP3</p>
+                            </div>
+                            <div class="bxtxt">
+                                <p>STEP2</p>
+                            </div>
+                            <div class="bxtxt">
+                                <p>STEP1</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="as count">
+                        <div class="bx_count">
+                            <div class="bxC ct_box">
+                                <p class="ct_txt">카운트</p>
+                            </div>
+                            <div class="bxC ct_status">
+                                <div class="ctBx">
+                                    <span class="myCount">3</span>
+                                </div>
+                                <div class="ctBx">
+                                    <span class="slash">/</span>
+                                </div>
+                                <div class="ctBx">
+                                    <span class="totalCount">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/game.js"></script>
+</body>
+</html>
