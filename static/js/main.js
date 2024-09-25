@@ -51,6 +51,7 @@ function promptUserId(endpoint) {
         break;
     }
 }
+
 function loginUser() {
     // 검지와 중지를 펼쳤을 때는 아이디를 입력하지 않고 바로 얼굴 인식을 통해 로그인 진행
     fetch('/login', {
