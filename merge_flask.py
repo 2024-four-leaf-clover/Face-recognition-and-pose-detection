@@ -119,6 +119,72 @@ def video_feed():
     cv2.destroyAllWindows()
     return jsonify(detection_status)
 
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    user_id = data.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "아이디를 입력해야 합니다."}), 400
+
+    # 얼굴 정보 저장 로직 추가
+    cap = cv2.VideoCapture(0)
+    frame_count = 0
+    required_frames = 30
+    eye_distance = None
+
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            return jsonify({"error": "카메라 영상을 캡처하는 데 실패했습니다."})
+
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = face_mesh.process(rgb_frame)
+
+        if results.multi_face_landmarks:
+            frame_count += 1
+            if frame_count >= required_frames:
+                for face_landmarks in results.multi_face_landmarks:
+                    left_eye = face_landmarks.landmark[33]
+                    right_eye = face_landmarks.landmark[263]
+
+                    left_eye_coords = (left_eye.x, left_eye.y, left_eye.z)
+                    right_eye_coords = (right_eye.x, right_eye.y, right_eye.z)
+
+                    eye_distance = calculate_3d_distance(left_eye_coords, right_eye_coords)
+                    break
+
+        if frame_count >= required_frames:
+            break
+
+    cap.release()
+
+    if eye_distance is None:
+        return jsonify({"error": "얼굴 인식을 실패했습니다. 다시 시도해주세요."}), 400
+
+    try:
+        with open(json_file, 'r+') as f:
+            try:
+                face_data = json.load(f)
+            except json.JSONDecodeError:
+                face_data = {}
+
+            if user_id in face_data:
+                return jsonify({"error": "이미 등록된 아이디입니다."}), 400
+
+            face_data[user_id] = {"eye_distance": eye_distance}
+
+            f.seek(0)
+            json.dump(face_data, f)
+            f.truncate()
+
+    except FileNotFoundError:
+        with open(json_file, 'w') as f:
+            face_data = {user_id: {"eye_distance": eye_distance}}
+            json.dump(face_data, f)
+
+    return jsonify({"message": "아이디가 성공적으로 등록되었습니다.", "eye_distance": eye_distance}), 200
+
 @app.route('/login', methods=['POST'])
 def login():
     cap = cv2.VideoCapture(0)
@@ -155,7 +221,6 @@ def login():
                         stored_eye_distance = user_data.get('eye_distance')
                         if abs(stored_eye_distance - eye_distance) < 0.05:
                             cap.release()
-                            cv2.destroyAllWindows()
                             return redirect(url_for('yoga'))
 
                     return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
