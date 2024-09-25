@@ -6,7 +6,7 @@ window.onload = function() {
             if (data.action === 'register') {
                 promptUserId('/register');  // 회원가입: 아이디 입력 프롬프트 실행
             } else if (data.action === 'login') {
-                loginUser();  // 로그인: 얼굴 인식으로 직접 로그인
+                loginUser();  // 로그인: 검지와 중지가 펼쳐지면 얼굴 인식으로 로그인
             }
         } else {
             alert("손 모양 인식에 실패했습니다.");
@@ -42,6 +42,8 @@ function promptUserId(endpoint) {
                 promptUserId(endpoint);  // 다시 프롬프트 실행
             } else {
                 alert(data.message);
+                // 아이디 등록 후 카메라 피드를 다시 표시
+                startCamera();  // 카메라 피드를 다시 띄움
             }
         })
         .catch(error => {
@@ -52,8 +54,21 @@ function promptUserId(endpoint) {
     }
 }
 
+function startCamera() {
+    // 카메라 피드를 다시 띄우기
+    fetch('/video_feed')
+    .then(response => response.json())
+    .then(data => {
+        if (data.detected) {
+            if (data.action === 'login') {
+                loginUser();  // 손가락 제스처에 따라 로그인 진행
+            }
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 function loginUser() {
-    // 검지와 중지를 펼쳤을 때는 아이디를 입력하지 않고 바로 얼굴 인식을 통해 로그인 진행
     fetch('/login', {
         method: 'POST',
         headers: {
@@ -62,17 +77,16 @@ function loginUser() {
     })
     .then(response => {
         if (response.redirected) {
-            // Flask에서 리다이렉트된 경우, 해당 URL로 이동
-            window.location.href = response.url;
+            window.location.href = response.url;  // 리다이렉션된 URL로 이동
         } else {
             return response.json();
         }
     })
     .then(data => {
         if (data && data.error) {
-            alert(data.error);  // 얼굴 불일치 등의 에러 메시지 표시
+            alert(data.error);  // 에러 메시지 표시
         } else if (data) {
-            alert(data.message);  // 로그인 성공 메시지
+            alert(data.message);  // 성공 메시지
         }
     })
     .catch(error => {
