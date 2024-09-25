@@ -1,0 +1,137 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Noto Sans KR'
+}
+#container{
+    background-color: beige;
+}
+.item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header{
+    display: grid;
+    grid-template-columns: 1fr 4.5fr 2fr;
+    background-color: white;
+}
+.hDiv{
+    justify-content: center;
+    align-items: center;
+}
+#logo{
+    float: right;
+    object-fit: contain;
+}
+.hRight{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+button{
+    border: none;
+    background-color: beige;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.nav{
+    padding: 50px 0;
+}
+.nText{
+    text-align: center;
+}
+.content{
+    display: grid;
+    grid-template-columns: 1fr 6fr 1.5fr;
+    grid-template-rows: 1fr 12fr;
+    grid-template-areas: 
+    'e a b'
+    'e c d';
+    background-color: white;
+}
+.main{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.trash{
+    grid-area: e;
+}
+.mode{
+    grid-area: a;
+    display: flex;
+    justify-content: start;
+}
+.mode button{
+    margin: 5px;
+}
+.mode button:hover{
+    background-color: rgb(218, 218, 155);
+}
+#easyButton.selected {
+    background-color: rgb(218, 218, 155);
+}
+.finish{
+    grid-area: b;
+    display: flex;
+    justify-content: start;
+}
+.yoga {
+    grid-area: c;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* 가로 정렬을 시작점에 맞추기 */
+    align-items: center; /* 세로 정렬을 가운데로 맞추기 */
+    gap: 25px;
+    width: 100%;
+}
+.yoga img {
+    width: calc(33.33% - 20px); /* 각 이미지 사이의 간격을 고려하여 너비 조정 */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.yoga img:hover {
+    transform: scale(1.05);
+}
+.main:nth-child(5){
+    align-items: first baseline;
+}
+.exercise{
+    grid-area: d;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+}
+.exChk{
+    border-radius: 10px;
+    width: 100%;
+    height: 80%;
+    padding: 10px;
+}
+.fst{
+    background-color: #EBECDD;
+}
+.snd{
+    background-color: #EDEDE8;
+}
+.thd{
+    background-color: #e9e9e9;
+}
+.exBox{
+    display: inline;
+    float: right;
+    padding: 0 10px;
+    background-color: white;
+    border-radius: 10px;
+}
