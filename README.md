@@ -16,24 +16,31 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 ## [merge_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge_flask.py)
 `app.py`와 `posture_flask.py`를 결합한 파일
 
-**(1) 회원가입: 아이디 입력 후 eyes.json에 얼굴 정보 저장**
+**(1) 회원가입과 로그인**
+|아이디 입력|아이디 저장|
 |---|----|
 |![id_input](static/result/id_input.png)|![id_complete](static/result/id_complete.png)|
 
+1. 손 동작 인식<br>
+- `merge_flask.py`
+- `index_finger_up`이 `True`이고 나머지 손가락은 `False`이면 검지만 펼쳐진 상태로 인식 (`register`) 
+- `index_finger_up`과 `middle_finger_up`이 `True`이고 나머지 손가락이 `False`이면 검지와 중지만 펼쳐진 상태로 인식 (`login`) 
+- 해당 결과는 `/video_feed API`를 통해 클라이언트로 전달<br><br>
 
+2. 화면 로딩 후 손 동작 처리<br>
+- `main.js`
+- 페이지 로딩 시 `/video_feed` API 호출로 손 동작 상태 확인
+- `register` 동작 시 `promptUserId`로 회원가입 프롬포트 실행
+- `login` 동작 시 `loginUser`로 로그인 처리<br><br>
 
-1. 손 제스처 인식<br>- index_finger_up이 True이고 나머지 손가락은 False이면 검지만 펼쳐진 상태로 인식 (register) - index_finger_up과 middle_finger_up이 True이고 나머지 손가락이 False이면 검지와 중지만 펼쳐진 상태로 인식 (login) - 해당 결과는 /video_feed API를 통해 클라이언트로 전달<br>
+3. 회원가입과 로그인 로직<br>
+- `merge_flask.py`, `main.js`
+- 로그인
+    - `promptUserId`: 아이디 입력 프롬포트 실행
+    - 조건에 부합하는 아이디가 입력되면 `/register`로 전달
+    - Python에서 얼굴 정보를 촬영해 `eyes.json` 파일에 아이디와 함께 저장
+- 회원가입
+    - `loginUser`: 카메라로 얼굴을 촬영한 후 `eyes.json`에 저장된 값과 비교
+    - 일치 시 로그인 성공 처리, 불일칠 시 오류 메시지 표시 후 재시도
 
-**(2) 로그인: eyes.json에 저장된 얼굴 정보와 비교**
-|사진|설명|
-|---|----|
-![login_attempt](static/result/login_attempt.png)||
-
-**(3) 로그인: 로그인 성공하면 yoga.html로 이동**
-|사진|설명|
-|---|----|
-![login_complete](static/result/login_complete.png)||
-
-**(4) 자세 비교**
-![posture_detection](static/result/posture_detection.png)||
 
