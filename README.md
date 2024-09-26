@@ -17,10 +17,12 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 `app.py`와 `posture_flask.py`를 결합한 파일
 
 **(1) 회원가입: 아이디 입력 후 eyes.json에 얼굴 정보 저장**
-|사진|설명|
 |---|----|
-|![id_input](static/result/id_input.png)
-<br>![id_complete](static/result/id_complete.png)|1. 손 제스처 인식<br>- index_finger_up이 True이고 나머지 손가락은 False이면 검지만 펼쳐진 상태로 인식 (register) - index_finger_up과 middle_finger_up이 True이고 나머지 손가락이 False이면 검지와 중지만 펼쳐진 상태로 인식 (login) - 해당 결과는 /video_feed API를 통해 클라이언트로 전달<br>
+|![id_input](static/result/id_input.png)|![id_complete](static/result/id_complete.png)|
+
+
+
+1. 손 제스처 인식<br>- index_finger_up이 True이고 나머지 손가락은 False이면 검지만 펼쳐진 상태로 인식 (register) - index_finger_up과 middle_finger_up이 True이고 나머지 손가락이 False이면 검지와 중지만 펼쳐진 상태로 인식 (login) - 해당 결과는 /video_feed API를 통해 클라이언트로 전달<br>
 
 **(2) 로그인: eyes.json에 저장된 얼굴 정보와 비교**
 |사진|설명|
