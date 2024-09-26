@@ -139,6 +139,7 @@ def register():
                     eye_distance = calculate_3d_distance(left_eye_coords, right_eye_coords)
                     if initial_eye_distance is None:
                         initial_eye_distance = eye_distance
+                        
                         # 새로운 user_id와 eye_distance 저장
                         face_data[user_id] = {
                             'eye_distance': initial_eye_distance
