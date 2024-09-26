@@ -16,3 +16,13 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 ## [merge_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge_flask.py)
 `app.py`와 `posture_flask.py`를 결합한 파일
 
+<!-- ![이미지 설명](./이미지폴더/이미지파일명.png) -->
+
+|이미지|설명|
+|-----|----|
+|![id_input](C:/Capstone2/static/result/id_input.png)|
+|![id_complete](C:/Capstone2/static/result/id_complete.png)|
+|![login_attempt](C:/Capstone2/static/result/login_attempt.png)|
+|![login_complete](C:/Capstone2/static/result/login_complete.png)|
+|![posture_detection](C:/Capstone2/static/result/posture_detection.png)|
+
