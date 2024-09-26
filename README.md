@@ -16,13 +16,18 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 ## [merge_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge_flask.py)
 `app.py`와 `posture_flask.py`를 결합한 파일
 
-<!-- ![이미지 설명](./이미지폴더/이미지파일명.png) -->
+**(1) 회원가입: 아이디 입력**<br>
+![id_input](static/result/id_input.png)<br><br>
 
-|이미지|설명|
-|-----|----|
-|![id_input](static/result/id_input.png)|
-|![id_complete](static/result/id_complete.png)|
-|![login_attempt](static/result/login_attempt.png)|
-|![login_complete](static/result/login_complete.png)|
-|![posture_detection](static/result/posture_detection.png)|
+**(2) 회원가입: 아이디 입력 후 eyes.json에 얼굴 정보 저장**<br>
+![id_complete](static/result/id_complete.png)<br><br>
+
+**(3) 로그인: eyes.json에 저장된 얼굴 정보와 비교**<br>
+![login_attempt](static/result/login_attempt.png)<br><br>
+
+**(4) 로그인: 로그인 성공하면 yoga.html로 이동**<br>
+![login_complete](static/result/login_complete.png)<br><br>
+
+**(5) 자세 비교**<br>
+![posture_detection](static/result/posture_detection.png)<br><br>
 
