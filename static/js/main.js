@@ -88,8 +88,9 @@ function loginUser() {
     .then(data => {
         if (data && data.error) {
             alert(data.error);  // 에러 메시지 표시
-            if (data.error === "얼굴 정보가 일치하지 않습니다.") {
-                // 얼굴 정보가 일치하지 않으면 카메라를 다시 띄움
+            
+            // 얼굴 정보가 일치하지 않거나 등록된 얼굴 정보가 없을 때 카메라를 다시 띄움
+            if (data.error === "얼굴 정보가 일치하지 않습니다." || data.error === "등록된 얼굴 정보가 없습니다.") {
                 startCamera();
             }
         } else if (data) {
@@ -101,3 +102,4 @@ function loginUser() {
         alert("오류가 발생했습니다. 다시 시도해주세요.");
     });
 }
+
