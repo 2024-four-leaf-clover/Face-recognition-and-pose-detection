@@ -24,9 +24,9 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 - 로그인 시, 촬영된 얼굴 정보가 `eyes.json`에 저장된 값과 비교되어 인증을 진행
 
 ||사진|
-|---|---|
-|아이디 입력|![id_input](static/result/id_input.png)|
-|아이디 저장|![id_complete](static/result/id_complete.png)|
-|얼굴 정보 저장|![id_eyes.json](static/result/id_eyes.json.png)|
+|:---:|:---:|
+|**아이디 입력**|![id_input](static/result/id_input.png)|
+|**아이디 저장**|![id_complete](static/result/id_complete.png)|
+|**얼굴 정보 저장**|![id_eyes.json](static/result/id_eyes.json.png)|
 
 
