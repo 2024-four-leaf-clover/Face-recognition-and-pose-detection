@@ -17,30 +17,14 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 `app.py`와 `posture_flask.py`를 결합한 파일
 
 **(1) 회원가입과 로그인**
+- 손동작에 따라 Python 로직 다르게 수행
+    - 검지만 펼쳐졌을 때: 회원가입(`register`) 동작 수행
+    - 검지와 중지만 펼쳐졌을 때: 로그인(`login`) 동작 수행
+- 회원가입 시, `main.js`에서 프롬프트로 입력된 아이디와 촬영한 얼굴 정보를 Python이 `eyes.json`에 저장
+- 로그인 시, 촬영된 얼굴 정보가 `eyes.json`에 저장된 값과 비교되어 인증을 진행
+
 |아이디 입력|아이디 저장|
 |---|----|
 |![id_input](static/result/id_input.png)|![id_complete](static/result/id_complete.png)|
-
-1. 손 동작 인식<br>
-- `merge_flask.py`
-- `index_finger_up`이 `True`이고 나머지 손가락은 `False`이면 검지만 펼쳐진 상태로 인식 (`register`) 
-- `index_finger_up`과 `middle_finger_up`이 `True`이고 나머지 손가락이 `False`이면 검지와 중지만 펼쳐진 상태로 인식 (`login`) 
-- 해당 결과는 `/video_feed API`를 통해 클라이언트로 전달<br><br>
-
-2. 화면 로딩 후 손 동작 처리<br>
-- `main.js`
-- 페이지 로딩 시 `/video_feed` API 호출로 손 동작 상태 확인
-- `register` 동작 시 `promptUserId`로 회원가입 프롬포트 실행
-- `login` 동작 시 `loginUser`로 로그인 처리<br><br>
-
-3. 회원가입과 로그인 로직<br>
-- `merge_flask.py`, `main.js`
-- 로그인
-    - `promptUserId`: 아이디 입력 프롬포트 실행
-    - 조건에 부합하는 아이디가 입력되면 `/register`로 전달
-    - Python에서 얼굴 정보를 촬영해 `eyes.json` 파일에 아이디와 함께 저장
-- 회원가입
-    - `loginUser`: 카메라로 얼굴을 촬영한 후 `eyes.json`에 저장된 값과 비교
-    - 일치 시 로그인 성공 처리, 불일칠 시 오류 메시지 표시 후 재시도
 
 
