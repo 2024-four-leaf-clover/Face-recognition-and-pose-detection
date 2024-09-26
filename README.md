@@ -1,44 +1,18 @@
-# SYC 웹 사이트 구축
+# 스요클(스마트 요가 클럽)
+AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향인 헬시플레저(건강과 기쁨의 합성어로, 건강을 즐겁게 관리한다라는 의미)로 지속 가능한 건강 관리를 도모하는 요가 게임 시스템
 
-## 1. login 폴더에 있는 파일
-### (1) face_recognition.py
-- eyes.json에 저장한 얼굴 정보를 바탕으로 얼굴 인식하는 파이썬 코드
-- MediaPipe 코드 활용
+## 주요 기능
+- AI 기술을 기반한 자세 교정으로 정확도 향상
+- 얼굴 인식으로 인한 편한 로그인
+- 카메라로 운동하는 사용자를 촬영해 모니터로 실시간 피드백 제공
+- 운동 기록 저장 및 분석 시스템
 
-### (2) face_store.py
-- 얼굴 정보(눈 자간 3D 좌표 거리) eyes.json 파일에 저장하는 파이썬 코드
-- MediaPipe 코드 활용
+## [app.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/app.py)
+`app.py`는 `Flask` 웹 프레임워크를 이용해 웹 서버를 만들고, 웹캠을 통해 손동작 및 얼굴 인식을 수행하는 로직을 포함한다. `MediaPipe` 라이브러리를 활용해 손동작과 얼굴을 감지하며, 이를 통해 회원가입 또는 로그인 동작을 수행한다.
 
-### (3) logIn.py
-- 검지와 중지를 펼쳤을 때를 감지하는 파이썬 코드
-- MediaPipe의 손 랜드마크 인지 파이썬 코드를 활용
-- 로그인할 때 참고할 파이썬 코드
+## [posture_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/posture_flask.py)
+`posture_flask.py`는 `Flask `웹 프레임워크를 사용하여 오가 자세 인식을 수행하는 웹 애플리케이션을 구축한다. `MediaPipe` 라이브러리를 사용해 웹캠으로 사용자의 요가 자세를 인식하고, 미리 로드한 표준 요가 자세 이미지와 비교하여 인식 결과를 제공한다.
 
-### (4) logOut.py
-- 검지, 중지, 약지를 펼쳤을 때를 감지하는 파이썬 코드
-- MediaPipe의 손 랜드마크 인지 파이썬 코드를 활용
-- 로그아웃할 때 참고할 파이썬 코드
+## [merge_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge_flask.py)
+`app.py`와 `posture_flask.py`를 결합한 파일
 
-### (5) signUp.py
-- 검지만 펼쳤을 때를 감지하는 파이썬 코드
-- MediaPipe의 손 랜드마크 인지 파이썬 코드를 활용
-- 회원가입할 때 참고할 파이썬 코드
-
-## 2. static 폴더에 있는 폴더
-### (1) css
-- html을 꾸밀 css 파일을 담은 폴더
-
-### (2) img
-- html에 사용된 img 파일을 담은 폴더
-
-### (3) js
-- html에 사용된 js 파일을 담은 폴더
-
-## 3. templates 폴더
-- html 파일을 담은 폴더
-
-## 4. app.py
-- SYC 웹 사이트를 구축시킬 flask 파일
-
-## 5. eyes.json
-- face_store.py를 실행시켜 카메라로 촬영한 사용자의 얼굴 자간 정보를 저장할 json 파일
