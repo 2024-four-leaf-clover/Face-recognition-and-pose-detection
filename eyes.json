@@ -1,1 +1,20 @@
-{"eunseo12": {"eye_distance": 0.1633681826628976}}
+{
+    "eunseo12": {
+        "eye_distance": 0.14564539007260804,
+        "nose_chin_distance": 0.16604028591304754,
+        "mouth_width": 0.06813846685207826,
+        "forehead_chin_distance": 0.3607747645620685
+    },
+    "yun123": {
+        "eye_distance": 0.16878808240372392,
+        "nose_chin_distance": 0.13758349183229063,
+        "mouth_width": 0.09694766899078791,
+        "forehead_chin_distance": 0.27729355200264716
+    },
+    "yujin12": {
+        "eye_distance": 0.20418466831832363,
+        "nose_chin_distance": 0.19138882447533212,
+        "mouth_width": 0.09538473717842506,
+        "forehead_chin_distance": 0.4736199591432175
+    }
+}
