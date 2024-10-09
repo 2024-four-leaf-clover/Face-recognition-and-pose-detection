@@ -57,6 +57,14 @@ function handleClick() {
 
 // 페이지가 로드될 때 초기화 작업 실행
 window.onload = function() {
+    // 쿼리 매개변수에서 user_id를 가져오기
+    var urlParams = new URLSearchParams(window.location.search);
+    var userId = urlParams.get('user_id');  // user_id 가져오기
+
+    if (userId) {
+        alert(userId + '님 반갑습니다!');  // 프롬프트에 환영 메시지 표시
+    }
+
     // 초기 로드 시 'easyButton'의 배경색 설정
     document.getElementById('easyButton').style.backgroundColor = 'rgb(218, 218, 155)';
     // 쉬운 모드 이미지를 갤러리에 표시
