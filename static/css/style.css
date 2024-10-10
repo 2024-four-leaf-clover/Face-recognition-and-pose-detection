@@ -69,3 +69,19 @@ body{
     object-fit: contain;
 }
 
+/* 알림 메시지 스타일 */
+#notification {
+    display: none;
+    position: fixed;
+    top: 20px; /* 화면의 맨 위에서 20px 아래에 위치 */
+    left: 50%; /* 화면의 가로 중앙에 위치 */
+    transform: translateX(-50%); /* 요소의 가로 크기만큼 반 이동하여 가로 정렬 */
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+
