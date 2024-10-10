@@ -34,7 +34,8 @@ pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)  # �
 json_file = 'eyes.json'  # 얼굴 정보가 저장될 JSON 파일 경로 설정
 
 # 요가 자세 이미지 경로와 이미지 로드 및 전처리
-standard_pose_image_path = "C:/Capstone2/static/yoga_posture/dataset/vriksasana/1-0.png"  # 요가 자세 이미지 경로
+standard_pose_image_path = "C:/Capstone2/static/yoga_posture/dataset/agnistambhasana/10-0.png"  # 요가 자세 이미지 경로
+
 standard_pose_image = cv2.imread(standard_pose_image_path)  # 이미지를 읽어옴
 standard_pose_image = cv2.resize(standard_pose_image, (640, 480))  # 이미지를 640x480으로 리사이징
 standard_pose_image_rgb = cv2.cvtColor(standard_pose_image, cv2.COLOR_BGR2RGB)  # 이미지를 BGR에서 RGB로 변환
@@ -238,100 +239,95 @@ def register():
     return jsonify({"message": "아이디가 성공적으로 등록되었습니다.", "face_features": face_features}), 200  # 성공 메시지 반환
 
 # 로그인 처리 라우트
-@app.route('/login', methods=['POST'])  # '/login' 경로로 POST 요청이 오면 login 함수 실행
+@app.route('/login', methods=['POST'])
 def login():
-    cap = cv2.VideoCapture(0)  # 웹캠 열기
-    frame_count = 0  # 프레임 카운터 초기화
-    required_frames = 30  # 필요한 프레임 수 설정
+    cap = cv2.VideoCapture(0)
+    frame_count = 0
+    required_frames = 30
 
     try:
-        with open(json_file, 'r') as f:  # json 파일 열기
-            face_data = json.load(f)  # 얼굴 데이터 불러오기
-    except (FileNotFoundError, json.JSONDecodeError):  # 파일이 없거나 JSON 형식이 잘못된 경우
-        return jsonify({"error": "등록된 얼굴 정보가 없습니다."})  # 에러 메시지 반환
+        with open(json_file, 'r') as f:
+            face_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({"error": "등록된 얼굴 정보가 없습니다."})
 
-    matching_user_id = None  # 매칭된 사용자 초기화
+    matching_user_id = None
 
-    while cap.isOpened():  # 웹캠이 열려 있을 동안 루프
-        success, frame = cap.read()  # 프레임 읽기
-        if not success:  # 프레임 읽기에 실패하면 루프 종료
-            return jsonify({"error": "Failed to capture video."})  # 실패 시 에러 반환
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            return jsonify({"error": "카메라 영상을 캡처하는 데 실패했습니다."})
 
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # 프레임을 RGB로 변환
-        results = face_mesh.process(rgb_frame)  # 얼굴 인식 처리
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = face_mesh.process(rgb_frame)
 
-        if results.multi_face_landmarks:  # 얼굴 랜드마크가 감지되면
-            frame_count += 1  # 프레임 카운트 증가
-            if frame_count >= required_frames:  # 필요한 프레임 수에 도달했을 때
-                for face_landmarks in results.multi_face_landmarks:  # 감지된 각 얼굴에 대해 처리
-                    left_eye = face_landmarks.landmark[33]  # 왼쪽 눈 좌표 추출
-                    right_eye = face_landmarks.landmark[263]  # 오른쪽 눈 좌표 추출
-                    nose_tip = face_landmarks.landmark[1]  # 코 끝 좌표 추출
-                    chin = face_landmarks.landmark[152]  # 턱 좌표 추출
-                    left_mouth = face_landmarks.landmark[61]  # 왼쪽 입꼬리 좌표 추출
-                    right_mouth = face_landmarks.landmark[291]  # 오른쪽 입꼬리 좌표 추출
-                    forehead = face_landmarks.landmark[10]  # 이마 좌표 추출
+        if results.multi_face_landmarks:
+            frame_count += 1
+            if frame_count >= required_frames:
+                for face_landmarks in results.multi_face_landmarks:
+                    left_eye = face_landmarks.landmark[33]
+                    right_eye = face_landmarks.landmark[263]
+                    nose_tip = face_landmarks.landmark[1]
+                    chin = face_landmarks.landmark[152]
+                    left_mouth = face_landmarks.landmark[61]
+                    right_mouth = face_landmarks.landmark[291]
+                    forehead = face_landmarks.landmark[10]
 
-                    # 사용자의 얼굴 특징 계산
                     eye_distance = calculate_3d_distance(
-                        (left_eye.x, left_eye.y, left_eye.z),  # 왼쪽 눈 좌표
-                        (right_eye.x, right_eye.y, right_eye.z)  # 오른쪽 눈 좌표
+                        (left_eye.x, left_eye.y, left_eye.z),
+                        (right_eye.x, right_eye.y, right_eye.z)
                     )
                     nose_chin_distance = calculate_3d_distance(
-                        (nose_tip.x, nose_tip.y, nose_tip.z),  # 코 끝 좌표
-                        (chin.x, chin.y, chin.z)  # 턱 좌표
+                        (nose_tip.x, nose_tip.y, nose_tip.z),
+                        (chin.x, chin.y, chin.z)
                     )
                     mouth_width = calculate_3d_distance(
-                        (left_mouth.x, left_mouth.y, left_mouth.z),  # 왼쪽 입꼬리 좌표
-                        (right_mouth.x, right_mouth.y, right_mouth.z)  # 오른쪽 입꼬리 좌표
+                        (left_mouth.x, left_mouth.y, left_mouth.z),
+                        (right_mouth.x, right_mouth.y, right_mouth.z)
                     )
                     forehead_chin_distance = calculate_3d_distance(
-                        (forehead.x, forehead.y, forehead.z),  # 이마 좌표
-                        (chin.x, chin.y, chin.z)  # 턱 좌표
+                        (forehead.x, forehead.y, forehead.z),
+                        (chin.x, chin.y, chin.z)
                     )
 
-                    # 모든 얼굴 특징 비교 (4가지 요소)
-                    for user_id, user_data in face_data.items():  # 등록된 얼굴 데이터와 비교
-                        stored_eye_distance = user_data.get('eye_distance')  # 저장된 눈 사이 거리
-                        stored_nose_chin_distance = user_data.get('nose_chin_distance')  # 저장된 코와 턱 사이 거리
-                        stored_mouth_width = user_data.get('mouth_width')  # 저장된 입의 너비
-                        stored_forehead_chin_distance = user_data.get('forehead_chin_distance')  # 저장된 이마와 턱 사이 거리
-                        # 4가지 요소 모두 5% 이내의 오차 허용
+                    for user_id, user_data in face_data.items():
                         if (
-                            abs(stored_eye_distance - eye_distance) < 0.05 and
-                            abs(stored_nose_chin_distance - nose_chin_distance) < 0.05 and
-                            abs(stored_mouth_width - mouth_width) < 0.05 and
-                            abs(stored_forehead_chin_distance - forehead_chin_distance) < 0.05
+                            abs(user_data.get('eye_distance') - eye_distance) < 0.03 and
+                            abs(user_data.get('nose_chin_distance') - nose_chin_distance) < 0.03 and
+                            abs(user_data.get('mouth_width') - mouth_width) < 0.03 and
+                            abs(user_data.get('forehead_chin_distance') - forehead_chin_distance) < 0.03
                         ):
-                            matching_user_id = user_id  # 일치하는 user_id를 저장
-                            break  # 매칭된 경우 루프 종료
+                            matching_user_id = user_id
+                            break
 
-                if matching_user_id:  # 일치하는 user_id가 있으면
-                    cap.release()  # 웹캠 릴리즈
-                    return redirect(url_for('yoga', user_id=matching_user_id))  # 일치하는 user_id로 yoga 페이지로 이동
+                if matching_user_id:
+                    cap.release()
+                    return redirect(url_for('yoga', user_id=matching_user_id))  # yoga.html로 이동
 
-                return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})  # 매칭 실패 시 에러 반환
+                return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
 
-        else:  # 얼굴이 감지되지 않았을 때
-            frame_count = 0  # 프레임 카운트를 초기화
+        else:
+            frame_count = 0
 
-        if cv2.waitKey(5) & 0xFF == ord('q'):  # 'q'를 누르면 루프 종료
+        if cv2.waitKey(5) & 0xFF == ord('q'):
             break
 
-    cap.release()  # 웹캠 릴리즈
-    cv2.destroyAllWindows()  # 모든 창 닫기
-    return jsonify({"error": "Failed to login."})  # 로그인 실패 시 에러 반환
+    cap.release()
+    cv2.destroyAllWindows()
+    return jsonify({"error": "Failed to login."})
 
 # 요가 페이지 렌더링
-@app.route('/yoga')  # '/yoga' 경로로 요청이 오면 yoga 함수 실행
+@app.route('/yoga')
 def yoga():
-    return render_template('yoga.html')  # 요가 페이지 렌더링
+    user_id = request.args.get('user_id', 'Unknown')  # 로그인 시 전달된 user_id를 받아옴
+    return render_template('yoga.html', user_id=user_id)
 
 # 게임 페이지 렌더링
-@app.route('/game')  # '/game' 경로로 요청이 오면 game 함수 실행
+@app.route('/game')
 def game():
-    pose_name = os.path.basename(standard_pose_image_path).split('.')[0]  # 요가 자세 이름을 추출
-    return render_template('game.html', pose_name=pose_name)  # 게임 페이지 렌더링
+    user_id = request.args.get('user_id', 'Unknown')  # Flask 요청에서 user_id를 가져옴 (디폴트는 'Unknown')
+    pose_name = os.path.basename(standard_pose_image_path).split('.')[0]
+    return render_template('game.html', pose_name=pose_name, user_id=user_id)
 
 # 요가 비디오 피드 라우트
 @app.route('/video_feed_yoga')  # '/video_feed_yoga' 경로로 요청이 오면 video_feed_yoga 함수 실행
