@@ -32,16 +32,32 @@ window.onload = function() {
 
 // 아이디 입력 프롬프트를 띄우는 함수
 function promptUserId(endpoint) {
-    let userId;
+    let userId = prompt("아이디를 입력해주세요 (영어와 숫자의 조합으로 6자 이상, 첫 시작은 영어)");  // 사용자에게 아이디 입력을 요청
+
+    if (userId === null) {  // 사용자가 '취소'를 누른 경우
+        startCamera();  // 카메라 피드 다시 시작
+        return;  // 함수 종료
+    }
+
     while (true) {  // 유효한 아이디가 입력될 때까지 반복
-        userId = prompt("아이디를 입력해주세요 (영어와 숫자의 조합으로 6자 이상, 첫 시작은 영어)");  // 사용자에게 아이디 입력을 요청
         if (!userId) {  // 아이디가 입력되지 않으면
             showNotification("아이디를 입력해야 합니다.");  // 알림 메시지 표시
+            userId = prompt("아이디를 입력해주세요 (영어와 숫자의 조합으로 6자 이상, 첫 시작은 영어)");
+            if (userId === null) {  // 사용자가 '취소'를 누른 경우
+                startCamera();  // 카메라 피드 다시 시작
+                return;  // 함수 종료
+            }
             continue;
         }
+
         // 아이디가 조건에 맞지 않으면 다시 입력 요청
         if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(userId) || !/\d/.test(userId) || !/[a-zA-Z]/.test(userId) || userId.length < 6) {
             showNotification("아이디는 영어와 숫자의 조합으로 6자 이상이어야 하며 첫 시작은 영어여야 합니다.");  // 알림 메시지 표시
+            userId = prompt("아이디를 입력해주세요 (영어와 숫자의 조합으로 6자 이상, 첫 시작은 영어)");
+            if (userId === null) {  // 사용자가 '취소'를 누른 경우
+                startCamera();  // 카메라 피드 다시 시작
+                return;  // 함수 종료
+            }
             continue;
         }
 
