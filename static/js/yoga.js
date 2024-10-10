@@ -1,22 +1,22 @@
 // 각 난이도별로 표시할 이미지 배열 설정
 var easyImages = [
-    '../static/yoga_posture/dataset/virabhadrasana i/4-0.png',
-    '../static/yoga_posture/dataset/hanumanasana/6-0.png',
-    '../static/yoga_posture/dataset/virabhadrasana i/4-0.png',
-    '../static/yoga_posture/dataset/hanumanasana/6-0.png',
-    '../static/yoga_posture/dataset/hanumanasana/6-0.png'
+    '/static/yoga_posture/dataset/virabhadrasana i/4-0.png',
+    '/static/yoga_posture/dataset/hanumanasana/6-0.png',
+    '/static/yoga_posture/dataset/virabhadrasana i/4-0.png',
+    '/static/yoga_posture/dataset/hanumanasana/6-0.png',
+    '/static/yoga_posture/dataset/hanumanasana/6-0.png'
 ];
 
 var normalImages = [
-    '../static/img/기초요가.jpeg',
-    '../static/img/기초요가.jpeg',
-    '../static/img/기초요가.jpeg'
+    '/static/img/기초요가.jpeg',
+    '/static/img/기초요가.jpeg',
+    '/static/img/기초요가.jpeg'
 ];
 
 var hardImages = [
-    '../static/img/다리찢기.jpeg',
-    '../static/img/다리찢기.jpeg',
-    '../static/img/다리찢기.jpeg'
+    '/static/img/다리찢기.jpeg',
+    '/static/img/다리찢기.jpeg',
+    '/static/img/다리찢기.jpeg'
 ];
 
 // 갤러리 컨테이너 요소를 선택
@@ -39,7 +39,9 @@ function showImages(mode) {
     images.forEach(function(src) {
         var img = document.createElement('img');
         img.src = src;
+        img.alt = 'Yoga Pose';
         img.style.cursor = 'pointer';
+        img.style.maxWidth = '100%';  // 이미지 크기 조정
         img.onclick = function() {
             handleClick(img);
         };
