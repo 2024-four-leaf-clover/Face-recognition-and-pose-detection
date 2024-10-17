@@ -272,32 +272,35 @@ def login():
                         left_eye = face_landmarks.landmark[33]
                         right_eye = face_landmarks.landmark[263]
 
-                        left_eye_coords = (left_eye.x, left_eye.y, left_eye.z)
-                        right_eye_coords = (right_eye.x, right_eye.y, right_eye.z)
-
-                        eye_distance = calculate_3d_distance(left_eye_coords, right_eye_coords)
+                        eye_distance = calculate_3d_distance(
+                            (left_eye.x, left_eye.y, left_eye.z),
+                            (right_eye.x, right_eye.y, right_eye.z)
+                        )   
                         
                         for user_id, user_data in face_data.items():
                             stored_eye_distance = user_data.get('eye_distance')
                             if abs(stored_eye_distance - eye_distance) < 0.05:
-                                cap.release()
-                                return redirect(url_for('yoga'))  # 로그인 성공 시 리다이렉트
+                                matching_user_id = user_id
+                                break
+                        
+                    if matching_user_id:
+                        cap.release()
+                        return redirect(url_for('yoga', user_id=matching_user_id))  # yoga.html로 이동
 
                     return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
             else:
                 frame_count = 0
 
         cap.release()
+        cv2.destroyAllWindows()
         return jsonify({"error": "Failed to login."})
 
     return "로그인 페이지"  # GET 방식일 경우, 로그인 페이지를 반환하거나 다른 동작 처리
 
 
-
 @app.route('/yoga')
 def yoga():
     return render_template('yoga.html')
-
 
 @app.route('/game')
 def game():
