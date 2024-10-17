@@ -17,7 +17,7 @@ mp_face_mesh = mp.solutions.face_mesh
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
 
-# 손 인식 모델
+# 인식 모델
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.5)
 face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5)
 pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
