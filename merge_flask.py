@@ -173,6 +173,9 @@ def register():
                     left_mouth = face_landmarks.landmark[61]  # 왼쪽 입꼬리 좌표 추출
                     right_mouth = face_landmarks.landmark[291]  # 오른쪽 입꼬리 좌표 추출
                     forehead = face_landmarks.landmark[10]  # 이마 좌표 추출
+                    left_cheek = face_landmarks.landmark[234]  # 왼쪽 광대
+                    right_cheek = face_landmarks.landmark[454]  # 오른쪽 광대
+                    nose_bridge = face_landmarks.landmark[6]  # 콧대 중간 지점
 
                     # 눈 사이 거리 계산
                     eye_distance = calculate_3d_distance(
@@ -198,12 +201,25 @@ def register():
                         (chin.x, chin.y, chin.z)  # 턱 좌표
                     )
 
+                    # 추가된 얼굴 특징 계산
+                    cheek_distance = calculate_3d_distance(
+                        (left_cheek.x, left_cheek.y, left_cheek.z),
+                        (right_cheek.x, right_cheek.y, right_cheek.z)
+                    )
+
+                    nose_bridge_length = calculate_3d_distance(
+                        (nose_tip.x, nose_tip.y, nose_tip.z),
+                        (nose_bridge.x, nose_bridge.y, nose_bridge.z)
+                    )
+
                     # 얼굴 특징을 딕셔너리에 저장
                     face_features = {  # 얼굴의 주요 특징을 딕셔너리에 저장
                         "eye_distance": eye_distance,  # 눈 사이 거리
                         "nose_chin_distance": nose_chin_distance,  # 코와 턱 사이 거리
                         "mouth_width": mouth_width,  # 입의 너비
-                        "forehead_chin_distance": forehead_chin_distance  # 이마와 턱 사이 거리
+                        "forehead_chin_distance": forehead_chin_distance,  # 이마와 턱 사이 거리
+                        "cheek_distance": cheek_distance,  # 추가된 광대 거리
+                        "nose_bridge_length": nose_bridge_length  # 추가된 콧대 길이
                     }
                     break  # 필요한 데이터를 추출한 후 루프 종료
 
@@ -272,6 +288,9 @@ def login():
                     left_mouth = face_landmarks.landmark[61]
                     right_mouth = face_landmarks.landmark[291]
                     forehead = face_landmarks.landmark[10]
+                    left_cheek = face_landmarks.landmark[234]
+                    right_cheek = face_landmarks.landmark[454]
+                    nose_bridge = face_landmarks.landmark[6]
 
                     eye_distance = calculate_3d_distance(
                         (left_eye.x, left_eye.y, left_eye.z),
@@ -289,13 +308,23 @@ def login():
                         (forehead.x, forehead.y, forehead.z),
                         (chin.x, chin.y, chin.z)
                     )
+                    cheek_distance = calculate_3d_distance(
+                        (left_cheek.x, left_cheek.y, left_cheek.z),
+                        (right_cheek.x, right_cheek.y, right_cheek.z)
+                    )
+                    nose_bridge_length = calculate_3d_distance(
+                        (nose_tip.x, nose_tip.y, nose_tip.z),
+                        (nose_bridge.x, nose_bridge.y, nose_bridge.z)
+                    )
 
                     for user_id, user_data in face_data.items():
                         if (
                             abs(user_data.get('eye_distance') - eye_distance) < 0.03 and
                             abs(user_data.get('nose_chin_distance') - nose_chin_distance) < 0.03 and
                             abs(user_data.get('mouth_width') - mouth_width) < 0.03 and
-                            abs(user_data.get('forehead_chin_distance') - forehead_chin_distance) < 0.03
+                            abs(user_data.get('forehead_chin_distance') - forehead_chin_distance) < 0.03 and
+                            abs(user_data.get('cheek_distance') - cheek_distance) < 0.03 and
+                            abs(user_data.get('nose_bridge_length') - nose_bridge_length) < 0.03  # 쉼표 삭제
                         ):
                             matching_user_id = user_id
                             break
