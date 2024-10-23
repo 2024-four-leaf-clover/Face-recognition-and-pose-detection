@@ -148,11 +148,17 @@ def register():
     if not user_id:  # user_id가 없으면
         return jsonify({"error": "아이디를 입력해야 합니다."}), 400  # 에러 메시지 반환
 
-    # 얼굴 정보 저장 로직 추가
     cap = cv2.VideoCapture(0)  # 웹캠 열기
     frame_count = 0  # 프레임 카운터 초기화
     required_frames = 30  # 필요한 프레임 수 설정
-    face_features = {}  # 얼굴 특징을 저장할 딕셔너리 초기화
+
+    # 얼굴 데이터를 저장할 리스트 초기화
+    eye_distances = []
+    nose_chin_distances = []
+    mouth_widths = []
+    forehead_chin_distances = []
+    cheek_distances = []
+    nose_bridge_lengths = []
 
     while cap.isOpened():  # 웹캠이 열려 있을 동안 루프
         success, frame = cap.read()  # 프레임 읽기
@@ -177,59 +183,54 @@ def register():
                     right_cheek = face_landmarks.landmark[454]  # 오른쪽 광대
                     nose_bridge = face_landmarks.landmark[6]  # 콧대 중간 지점
 
-                    # 눈 사이 거리 계산
-                    eye_distance = calculate_3d_distance(
-                        (left_eye.x, left_eye.y, left_eye.z),  # 왼쪽 눈 좌표
-                        (right_eye.x, right_eye.y, right_eye.z)  # 오른쪽 눈 좌표
-                    )
+                    # 여러 프레임에서 수집한 데이터 리스트에 저장
+                    eye_distances.append(calculate_3d_distance(
+                        (left_eye.x, left_eye.y, left_eye.z),
+                        (right_eye.x, right_eye.y, right_eye.z)
+                    ))
                     
-                    # 코와 턱 사이 거리 계산
-                    nose_chin_distance = calculate_3d_distance(
-                        (nose_tip.x, nose_tip.y, nose_tip.z),  # 코 끝 좌표
-                        (chin.x, chin.y, chin.z)  # 턱 좌표
-                    )
+                    nose_chin_distances.append(calculate_3d_distance(
+                        (nose_tip.x, nose_tip.y, nose_tip.z),
+                        (chin.x, chin.y, chin.z)
+                    ))
 
-                    # 입의 너비 계산
-                    mouth_width = calculate_3d_distance(
-                        (left_mouth.x, left_mouth.y, left_mouth.z),  # 왼쪽 입꼬리 좌표
-                        (right_mouth.x, right_mouth.y, right_mouth.z)  # 오른쪽 입꼬리 좌표
-                    )
+                    mouth_widths.append(calculate_3d_distance(
+                        (left_mouth.x, left_mouth.y, left_mouth.z),
+                        (right_mouth.x, right_mouth.y, right_mouth.z)
+                    ))
 
-                    # 이마와 턱 사이 거리 계산
-                    forehead_chin_distance = calculate_3d_distance(
-                        (forehead.x, forehead.y, forehead.z),  # 이마 좌표
-                        (chin.x, chin.y, chin.z)  # 턱 좌표
-                    )
+                    forehead_chin_distances.append(calculate_3d_distance(
+                        (forehead.x, forehead.y, forehead.z),
+                        (chin.x, chin.y, chin.z)
+                    ))
 
-                    # 추가된 얼굴 특징 계산
-                    cheek_distance = calculate_3d_distance(
+                    cheek_distances.append(calculate_3d_distance(
                         (left_cheek.x, left_cheek.y, left_cheek.z),
                         (right_cheek.x, right_cheek.y, right_cheek.z)
-                    )
+                    ))
 
-                    nose_bridge_length = calculate_3d_distance(
+                    nose_bridge_lengths.append(calculate_3d_distance(
                         (nose_tip.x, nose_tip.y, nose_tip.z),
                         (nose_bridge.x, nose_bridge.y, nose_bridge.z)
-                    )
+                    ))
 
-                    # 얼굴 특징을 딕셔너리에 저장
-                    face_features = {  # 얼굴의 주요 특징을 딕셔너리에 저장
-                        "eye_distance": eye_distance,  # 눈 사이 거리
-                        "nose_chin_distance": nose_chin_distance,  # 코와 턱 사이 거리
-                        "mouth_width": mouth_width,  # 입의 너비
-                        "forehead_chin_distance": forehead_chin_distance,  # 이마와 턱 사이 거리
-                        "cheek_distance": cheek_distance,  # 추가된 광대 거리
-                        "nose_bridge_length": nose_bridge_length  # 추가된 콧대 길이
-                    }
-                    break  # 필요한 데이터를 추출한 후 루프 종료
-
-        if frame_count >= required_frames:  # 필요한 프레임 수에 도달하면 루프 종료
-            break
+            if frame_count >= required_frames:  # 필요한 프레임 수에 도달하면 루프 종료
+                break
 
     cap.release()  # 웹캠 릴리즈
 
-    if not face_features:  # 얼굴 특징이 없으면
+    if not eye_distances:  # 얼굴 특징이 없으면
         return jsonify({"error": "얼굴 인식을 실패했습니다. 다시 시도해주세요."}), 400  # 에러 메시지 반환
+
+    # 여러 프레임에서 수집한 데이터의 평균값 계산
+    face_features = {  
+        "eye_distance": np.mean(eye_distances),
+        "nose_chin_distance": np.mean(nose_chin_distances),
+        "mouth_width": np.mean(mouth_widths),
+        "forehead_chin_distance": np.mean(forehead_chin_distances),
+        "cheek_distance": np.mean(cheek_distances),
+        "nose_bridge_length": np.mean(nose_bridge_lengths)
+    }
 
     try:
         with open(json_file, 'r+') as f:  # json 파일을 읽고 쓸 수 있는 모드로 엶
