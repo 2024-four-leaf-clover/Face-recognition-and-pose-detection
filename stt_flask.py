@@ -103,7 +103,7 @@ def recognize_speech_for_register():
             audio = r.listen(source)
             command = r.recognize_google(audio, language="ko-KR")
             print(f"Recognized command (register): {command}")
-            if "회원가입" in command:
+            if "회원가입" or "회원 가입"in command:
                 register_running = False  # 회원가입 완료 상태로 설정
                 return True
             return False
