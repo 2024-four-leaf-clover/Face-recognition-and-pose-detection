@@ -82,6 +82,7 @@ function promptUserId(endpoint) {
         .catch(error => {
             console.error('Error:', error);  // 에러를 콘솔에 출력
             showNotification("오류가 발생했습니다. 다시 시도해주세요.");  // 알림 메시지 표시
+            startCamera();  // 카메라 피드 다시 시작
         });
         break;  // 조건을 만족하고 요청을 성공적으로 보낸 후 반복 종료
     }
