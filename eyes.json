@@ -1,20 +1,34 @@
 {
     "eunseo12": {
-        "eye_distance": 0.14564539007260804,
-        "nose_chin_distance": 0.16604028591304754,
-        "mouth_width": 0.06813846685207826,
-        "forehead_chin_distance": 0.3607747645620685
+        "eye_distance": 0.14961967393001804,
+        "nose_chin_distance": 0.17519954257061832,
+        "mouth_width": 0.06980310024924923,
+        "forehead_chin_distance": 0.36341730779780124,
+        "cheek_distance": 0.23223919165969112,
+        "nose_bridge_length": 0.08724363258855905
     },
-    "yun123": {
-        "eye_distance": 0.16878808240372392,
-        "nose_chin_distance": 0.13758349183229063,
-        "mouth_width": 0.09694766899078791,
-        "forehead_chin_distance": 0.27729355200264716
+    "daeun01": {
+        "eye_distance": 0.16582571710794952,
+        "nose_chin_distance": 0.19477777416060812,
+        "mouth_width": 0.08760310652062998,
+        "forehead_chin_distance": 0.36720260222511325,
+        "cheek_distance": 0.24264937564598205,
+        "nose_bridge_length": 0.08314191098008512
     },
-    "yujin12": {
-        "eye_distance": 0.20418466831832363,
-        "nose_chin_distance": 0.19138882447533212,
-        "mouth_width": 0.09538473717842506,
-        "forehead_chin_distance": 0.4736199591432175
+    "lmj123": {
+        "eye_distance": 0.12781888978437228,
+        "nose_chin_distance": 0.1544559819576674,
+        "mouth_width": 0.0592236310656816,
+        "forehead_chin_distance": 0.312032009105692,
+        "cheek_distance": 0.20103056123633628,
+        "nose_bridge_length": 0.0707808790415239
+    },
+    "eunseo1111": {
+        "eye_distance": 0.17051569775615594,
+        "nose_chin_distance": 0.1900945045349677,
+        "mouth_width": 0.08273880113255401,
+        "forehead_chin_distance": 0.41028109214202746,
+        "cheek_distance": 0.26031820672395434,
+        "nose_bridge_length": 0.1011324791759083
     }
 }
