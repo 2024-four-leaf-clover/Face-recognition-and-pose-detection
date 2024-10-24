@@ -13,16 +13,6 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 ## [stt_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/stt_flask.py)
 `stt_flask.pyy`는 `Flask`와 `Mediapipe`, `OpenCV`를 사용해 음성 인식으로 회원가입와 로그인 기능을 처리한다. 또한 웹캠을 활용해 얼굴 및 자세 인식을 수행한다.
 
-
-### [app.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge/app.py)
-`app.py`는 `Flask` 웹 프레임워크를 이용해 웹 서버를 만들고, 웹캠을 통해 손동작 및 얼굴 인식을 수행하는 로직을 포함한다. `MediaPipe` 라이브러리를 활용해 손동작과 얼굴을 감지하며, 이를 통해 회원가입 또는 로그인 동작을 수행한다. `main.html`에 `main.js`를 연결한다.
-
-### [posture_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge/posture_flask.py)
-`posture_flask.py`는 `Flask `웹 프레임워크를 사용하여 오가 자세 인식을 수행하는 웹 애플리케이션을 구축한다. `MediaPipe` 라이브러리를 사용해 웹캠으로 사용자의 요가 자세를 인식하고, 미리 로드한 표준 요가 자세 이미지와 비교하여 인식 결과를 제공한다. `main.html`에 `main_stt.js`를 연결한다.
-
-### [merge_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge_flask.py)
-`app.py`와 `posture_flask.py`를 결합한 파일
-
 **(1) 회원가입과 로그인**
 - 손동작에 따라 Python 로직 다르게 수행
     - 검지만 펼쳐졌을 때: 회원가입(`register`) 동작 수행
@@ -38,3 +28,14 @@ AI를 활용하여 자세 교정 및 재활에 도움을 주고, 최신 동향�
 |**로그인 시도**|![login_attempt](static/result/4.login_attempt.png)|
 |**로그인 성공**|![login_complete](static/result/5.login_complete.png)|
 |**자세 인식**|![posture_detection](static/result/6.posture_detection.png)|
+
+## 그외
+
+### [app.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge/app.py)
+`app.py`는 `Flask` 웹 프레임워크를 이용해 웹 서버를 만들고, 웹캠을 통해 손동작 및 얼굴 인식을 수행하는 로직을 포함한다. `MediaPipe` 라이브러리를 활용해 손동작과 얼굴을 감지하며, 이를 통해 회원가입 또는 로그인 동작을 수행한다. `main.html`에 `main.js`를 연결한다.
+
+### [posture_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge/posture_flask.py)
+`posture_flask.py`는 `Flask `웹 프레임워크를 사용하여 오가 자세 인식을 수행하는 웹 애플리케이션을 구축한다. `MediaPipe` 라이브러리를 사용해 웹캠으로 사용자의 요가 자세를 인식하고, 미리 로드한 표준 요가 자세 이미지와 비교하여 인식 결과를 제공한다. `main.html`에 `main_stt.js`를 연결한다.
+
+### [merge_flask.py](https://github.com/2024-four-leaf-clover/Face-recognition-and-pose-detection/blob/main/merge_flask.py)
+`app.py`와 `posture_flask.py`를 결합한 파일
