@@ -134,3 +134,9 @@ function loginUser() {
         showNotification("오류가 발생했습니다. 다시 시도해주세요.");
     });
 }
+
+ // logo 클릭 시 페이지 새로고침 스크립트
+ document.getElementById('logo-link').addEventListener('click', function (event) {
+    event.preventDefault();  // 기본 링크 이동 동작 방지
+    location.reload();  // 페이지 새로고침
+});
