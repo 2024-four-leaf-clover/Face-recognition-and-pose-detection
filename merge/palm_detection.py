@@ -58,7 +58,7 @@ with mp_hands.Hands(
 
                 # 손가락이 모두 펴져 있고 엄지가 검지의 특정 방향에 있는지 확인
                 if check_all_fingers_straight(landmarks) and check_thumb_position(landmarks, hand_label):
-                    cv2.putText(image, f"{hand_label} Hand Fully Opened with Thumb in Position", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    cv2.putText(image, f"Hand Fully Opened with Thumb in Position", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 
                 # 손 Landmark를 화면에 그리기
                 mp_drawing.draw_landmarks(
