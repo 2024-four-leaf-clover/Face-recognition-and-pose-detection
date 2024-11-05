@@ -22,7 +22,7 @@ def all_fingers_open(landmarks):
 
     # 모든 손가락이 펴져 있는지 확인
     return (
-        landmarks[THUMB_TIP].x < landmarks[THUMB_IP].x and  # 엄지가 펼쳐진 상태
+        is_finger_up(landmarks, THUMB_TIP, THUMB_IP) and  # 엄지가 펼쳐진 상태
         is_finger_up(landmarks, INDEX_FINGER_TIP, INDEX_FINGER_PIP) and
         is_finger_up(landmarks, MIDDLE_FINGER_TIP, MIDDLE_FINGER_PIP) and
         is_finger_up(landmarks, RING_FINGER_TIP, RING_FINGER_PIP) and
@@ -63,5 +63,4 @@ cap.release()
 cv2.destroyAllWindows()
 
 #지금 문제점
-#오른손 손가락을 다 펼쳤을 때 손등이 카메라를 향해 있을 때만 정상적으로 인식
-#오른손 엄지를 접었을 때 정상적으로 인식함
+#엄지가 접혀있지는 않지만 손바닥을 향해 기울여진 상태인데 정상적으로 인식함
