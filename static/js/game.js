@@ -37,4 +37,30 @@ function handlePoseRecognition(success) {
 updateStep(currentStep);
 
 // 페이지 로드 시 posture_break.py 실행을 위한 함수 호출
-window.onload = fetchOutput;  // 페이지 로드가 완료되면 fetchOutput 함수를 호출
+//window.onload = fetchOutput;  // 페이지 로드가 완료되면 fetchOutput 함수를 호출
+
+// 손바닥 감지 상태를 주기적으로 확인
+setInterval(() => {
+    fetch('/check-hand').then(response => {
+        if (response.status === 200) {
+            window.location.href = '/yoga';  // 감지되면 A 페이지로 이동
+        }
+    });
+}, 1000);
+/* setInterval(() => {
+    console.log("Sending request to /check-hand...");  // 요청 전 로그 출력
+    fetch('/check-hand')
+        .then(response => {
+            console.log("Response status:", response.status); // 응답 상태 출력
+            if (response.status === 200) {
+                console.log("Hand detected, redirecting to index page");
+                window.location.href = '/';  // 감지되면 index 페이지로 이동
+            }
+        })
+        .catch(error => {
+            console.error("Error in fetch request:", error); // 에러 로그 출력
+        });
+}, 1000);  // 1초마다 상태 확인 */
+
+console.log("Game.js loaded and running...");
+console.log('hi');
