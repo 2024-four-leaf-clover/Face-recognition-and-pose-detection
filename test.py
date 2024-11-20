@@ -1,5 +1,5 @@
 # Flask와 필요한 모듈들 가져오기
-from flask import Flask, render_template, Response, jsonify, request, redirect, url_for, session  # Flask 관련 모듈들 가져오기
+from flask import Flask, render_template, Response, jsonify, request, redirect, url_for  # Flask 관련 모듈들 가져오기
 import cv2  # OpenCV를 사용한 영상 처리
 import mediapipe as mp  # MediaPipe 라이브러리로 영상 처리
 import math  # 수학 연산을 위한 모듈
@@ -10,7 +10,6 @@ import os  # 운영체제 관련 기능을 위한 모듈
 
 # Flask 앱 초기화
 app = Flask(__name__)  # Flask 애플리케이션 생성
-app.secret_key = "your_secret_key"
 
 # MediaPipe 초기화
 mp_hands = mp.solutions.hands  # 손 인식 모델 초기화
@@ -151,7 +150,7 @@ def register():
 
     cap = cv2.VideoCapture(0)  # 웹캠 열기
     frame_count = 0  # 프레임 카운터 초기화
-    required_frames = 30  # 필요한 프레임 수 설정
+    required_frames = 60  # 필요한 프레임 수 설정
 
     # 얼굴 데이터를 저장할 리스트 초기화
     eye_distances = []
@@ -261,7 +260,7 @@ def register():
 def login():
     cap = cv2.VideoCapture(0)
     frame_count = 0
-    required_frames = 30
+    required_frames = 60
 
     try:
         with open(json_file, 'r') as f:
@@ -333,8 +332,7 @@ def login():
 
                 if matching_user_id:
                     cap.release()
-                    session['user_id'] = matching_user_id  # 로그인 성공 시 세션에 user_id 저장
-                    return redirect(url_for('yoga'))  # yoga 페이지로 리다이렉트
+                    return redirect(url_for('yoga', user_id=matching_user_id))  # yoga.html로 이동
 
                 return jsonify({"error": "얼굴 정보가 일치하지 않습니다."})
 
@@ -348,22 +346,18 @@ def login():
     cv2.destroyAllWindows()
     return jsonify({"error": "Failed to login."})
 
-
 # 요가 페이지 렌더링
 @app.route('/yoga')
 def yoga():
-    user_id = session.get('user_id', 'Unknown')  # 세션에서 user_id 가져오기
+    user_id = request.args.get('user_id', 'Unknown')  # 로그인 시 전달된 user_id를 받아옴
     return render_template('yoga.html', user_id=user_id)
-
-# 추가한 요소
-@app.route('/get_user_id')
-def get_user_id():
-    return jsonify({"user_id": session.get('user_id', 'Unknown')})
 
 # 게임 페이지 렌더링
 @app.route('/game')
 def game():
-    user_id = session.get('user_id', 'Unknown')  # 세션에서 user_id 가져오기
+    global hand_detected
+    hand_detected = False  # 손바닥 감지 상태 초기화
+    user_id = request.args.get('user_id', 'Unknown')  # Flask 요청에서 user_id를 가져옴 (디폴트는 'Unknown')
     pose_name = os.path.basename(standard_pose_image_path).split('.')[0]
     return render_template('game.html', pose_name=pose_name, user_id=user_id)
 
@@ -372,31 +366,42 @@ def game():
 def video_feed_yoga():
     return Response(gen_yoga_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')  # 비디오 피드 생성
 
-# 필요한 손가락 검사 함수 추가
+def detect_hand(frame):
+    global hand_detected
+    print("Detect hand function called")  # 디버깅용 출력
+    with mp_hands.Hands(
+        max_num_hands=1,
+        min_detection_confidence=0.7,
+        min_tracking_confidence=0.7
+    ) as hands:
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = hands.process(rgb_frame)
+
+        if results.multi_hand_landmarks:
+            print("Hand landmarks detected")
+            for hand_landmarks in results.multi_hand_landmarks:
+                if check_all_fingers_straight(hand_landmarks.landmark):
+                    hand_detected = True
+                    print("Hand detected! Flag set to True")
+                mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+        else:
+            print("No hand detected in this frame")
+    return frame
+
+# 모든 손가락이 펴져 있는지 확인
 def check_all_fingers_straight(landmarks):
-    for tip_id in [8, 12, 16, 20]:  # 각 손가락 끝과 해당 마디 위치 비교
-        tip_y = landmarks[tip_id].y
-        base_y = landmarks[tip_id - 2].y
-        if tip_y > base_y:
+    for tip_id in [8, 12, 16, 20]:  # 검지, 중지, 약지, 소지 끝
+        base_id = tip_id - 2
+        if landmarks[tip_id].y > landmarks[base_id].y:  # 접혀 있다면 False
             return False
     return True
-
-def check_thumb_position(landmarks, hand_label):
-    thumb_tip = landmarks[4]
-    index_tip = landmarks[8]
-    if hand_label == "Right" and thumb_tip.x < index_tip.x:
-        return True
-    elif hand_label == "Left" and thumb_tip.x > index_tip.x:
-        return True
-    return False
 
 # 요가 프레임 생성 함수
 def gen_yoga_frames():
     cap = cv2.VideoCapture(0)  # 웹캠 열기
 
     pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)  # 자세 인식 모델 생성
-    hands = mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7, min_tracking_confidence=0.7)  # 손 인식 모델 생성
-
+    
     joint_list = [  # 관절 좌표 리스트
         (11, 13, 15),  # 왼쪽 어깨, 팔꿈치, 손목
         (12, 14, 16),  # 오른쪽 어깨, 팔꿈치, 손목
@@ -413,12 +418,13 @@ def gen_yoga_frames():
 
         frame = cv2.flip(frame, 1)  # 프레임을 좌우 반전
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # 프레임을 RGB로 변환
-        results_pose = pose.process(frame_rgb)  # 자세 인식 처리
-        results_hands = hands.process(frame_rgb)  # 손 인식 처리
+        results = pose.process(frame_rgb)  # 자세 인식 처리
 
-        # 자세 인식 결과가 있을 때
-        if results_pose.pose_landmarks:
-            mp_drawing.draw_landmarks(frame, results_pose.pose_landmarks, mp_pose.POSE_CONNECTIONS)  # 랜드마크를 그리기
+        # 손바닥 감지 처리
+        frame = detect_hand(frame)
+
+        if results.pose_landmarks:  # 자세 랜드마크가 감지되면
+            mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)  # 랜드마크를 그리기
             all_angles_correct = True  # 모든 각도가 정확한지 여부를 저장할 변수
 
             for joints in joint_list:  # 각 관절 좌표 조합에 대해 반복
@@ -429,24 +435,31 @@ def gen_yoga_frames():
                 )
 
                 user_angles = calculate_angle(  # 사용자의 현재 자세 각도 계산
-                    [results_pose.pose_landmarks.landmark[joints[0]].x, results_pose.pose_landmarks.landmark[joints[0]].y],
-                    [results_pose.pose_landmarks.landmark[joints[1]].x, results_pose.pose_landmarks.landmark[joints[1]].y],
-                    [results_pose.pose_landmarks.landmark[joints[2]].x, results_pose.pose_landmarks.landmark[joints[2]].y]
+                    [results.pose_landmarks.landmark[joints[0]].x, results.pose_landmarks.landmark[joints[0]].y],
+                    [results.pose_landmarks.landmark[joints[1]].x, results.pose_landmarks.landmark[joints[1]].y],
+                    [results.pose_landmarks.landmark[joints[2]].x, results.pose_landmarks.landmark[joints[2]].y]
                 )
 
-                if abs(std_angles - user_angles) > 15:  # 기준 각도와 차이가 15도 이상이면
+                """ if abs(std_angles - user_angles) > 15:  # 기준 각도와 차이가 15도 이상이면
                     color = (0, 0, 255)  # 빨간색으로 표시
                     all_angles_correct = False  # 자세가 정확하지 않음
                 else:
                     color = (0, 255, 0)  # 초록색으로 표시
 
                 # 관절 좌표에 원을 그려서 표시
-                cv2.circle(frame, (int(results_pose.pose_landmarks.landmark[joints[0]].x * frame.shape[1]),
-                                   int(results_pose.pose_landmarks.landmark[joints[0]].y * frame.shape[0])), 10, color, -1)
-                cv2.circle(frame, (int(results_pose.pose_landmarks.landmark[joints[1]].x * frame.shape[1]),
-                                   int(results_pose.pose_landmarks.landmark[joints[1]].y * frame.shape[0])), 10, color, -1)
-                cv2.circle(frame, (int(results_pose.pose_landmarks.landmark[joints[2]].x * frame.shape[1]),
-                                   int(results_pose.pose_landmarks.landmark[joints[2]].y * frame.shape[0])), 10, color, -1)
+                cv2.circle(frame, (int(results.pose_landmarks.landmark[joints[0]].x * frame.shape[1]),
+                                   int(results.pose_landmarks.landmark[joints[0]].y * frame.shape[0])), 10, color, -1)
+                cv2.circle(frame, (int(results.pose_landmarks.landmark[joints[1]].x * frame.shape[1]),
+                                   int(results.pose_landmarks.landmark[joints[1]].y * frame.shape[0])), 10, color, -1)
+                cv2.circle(frame, (int(results.pose_landmarks.landmark[joints[2]].x * frame.shape[1]),
+                                   int(results.pose_landmarks.landmark[joints[2]].y * frame.shape[0])), 10, color, -1) """
+                
+                # 각도 비교
+                color = (0, 255, 0) if abs(std_angles - user_angles) <= 15 else (0, 0, 255)
+                for joint in joints:
+                    x = int(results.pose_landmarks.landmark[joint].x * frame.shape[1])
+                    y = int(results.pose_landmarks.landmark[joint].y * frame.shape[0])
+                    cv2.circle(frame, (x, y), 10, color, -1)
 
             if all_angles_correct:  # 모든 각도가 정확하면
                 if correct_start_time is None:  # 처음으로 자세가 정확한 순간을 기록
@@ -463,22 +476,6 @@ def gen_yoga_frames():
             else:
                 correct_start_time = None  # 자세가 틀렸을 때 시간 초기화
 
-        # 손 인식 결과가 있을 때
-        if results_hands.multi_hand_landmarks and results_hands.multi_handedness:
-            for hand_landmarks, handedness in zip(results_hands.multi_hand_landmarks, results_hands.multi_handedness):
-                landmarks = hand_landmarks.landmark
-                hand_label = handedness.classification[0].label  # "Left" 또는 "Right"
-
-                # 손가락과 엄지 상태 검사
-                if check_all_fingers_straight(landmarks) and check_thumb_position(landmarks, hand_label):
-                    cap.release()  # 웹캠 릴리즈
-                    cv2.destroyAllWindows()  # 모든 창 닫기
-                    # 조건 충족 시 yoga.html로 이동
-                    return redirect(url_for('yoga'))
-
-                # 손 랜드마크 그리기
-                mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-
         combined_image = np.hstack((standard_pose_image, frame))  # 기준 자세와 사용자의 프레임을 나란히 합침
 
         # 이미지를 바이너리로 변환하여 브라우저로 전송
@@ -490,6 +487,14 @@ def gen_yoga_frames():
 
     cap.release()  # 웹캠 릴리즈
 
+@app.route('/check-hand')
+def check_hand():
+    global hand_detected
+    print("check_hand called, hand_detected =", hand_detected)  # 디버깅 메시지 추가
+    if hand_detected:
+        print("detected!")
+        return 'hand_detected', 200  # 손바닥 감지 상태 반환
+    return '', 204  # 감지되지 않으면 상태 없음
 
 # 애플리케이션 실행
 if __name__ == "__main__":  # 이 스크립트가 메인으로 실행될 때만
