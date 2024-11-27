@@ -19,11 +19,8 @@
             </div>
             <div class="hDiv hCenter"></div>
             <div class="hDiv hRight">
-                <div class="hrBox1">
-                    <button class="hrBtn center">고객센터</button>
-                </div>
-                <div class="hrBox2">
-                    <button class="hrBtn myPage">마이페이지</button>
+                <div class="id_box">
+                    <p><b>{{ user_id }}</b>님 환영합니다. 오늘 운동도 화이팅하세요!</p>
                 </div>
             </div>
         </div>
@@ -36,12 +33,12 @@
         <div class="item content">
             <div class="main trash"></div>
             <div class="main mode">
-                <button id="easyButton" onclick="showImages('easy')">쉬운 운동</button>
-                <button id="normalButton" onclick="showImages('normal')">보통 운동</button>
-                <button id="hardButton" onclick="showImages('hard')">어려운 운동</button>
+                <button id="button-easy" class="button selected" onclick="showImages('easy')">쉬운 운동</button>
+                <button id="button-nor" class="button" onclick="showImages('normal')">보통 운동</button>
+                <button id="button-hard" class="button" onclick="showImages('hard')">어려운 운동</button>
             </div>
             <div class="main finish">
-                <p>완료한 운동</p>
+                <p class="finishBox">완료한 운동</p>
             </div>
             <div class="main yoga" id="gallery">
                 <!-- script - img -->
@@ -65,12 +62,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 알림 메시지 요소 -->
-    <div id="notification">
-        <span id="notificationText"></span>
-    </div>
-
     <script src="/static/js/yoga.js"></script>
 </body>
 </html>
