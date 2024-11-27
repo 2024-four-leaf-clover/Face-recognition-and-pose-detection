@@ -30,14 +30,10 @@ body{
     float: right;
     object-fit: contain;
 }
-.hRight{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-}
-button{
+.finishBox, Button{
     border: none;
-    background-color: beige;
     padding: 5px 10px;
+    background-color: beige;
     border-radius: 10px;
     font-size: 15px;
     cursor: pointer;
@@ -75,10 +71,13 @@ button{
 .mode button{
     margin: 5px;
 }
-.mode button:hover{
+/* .mode button:hover{
     background-color: rgb(218, 218, 155);
-}
-#easyButton.selected {
+} */
+/* #easyButton.selected {
+    background-color: rgb(218, 218, 155);
+} */
+.selected{
     background-color: rgb(218, 218, 155);
 }
 .finish{
