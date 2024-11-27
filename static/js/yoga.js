@@ -84,3 +84,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+function checkGesture() {
+    fetch('/check_gesture').then(response => {
+        if (response.status === 204) {
+            setTimeout(checkGesture, 1000);
+        } else {
+            window.location.href = '/main';
+        }
+    });
+}
+
+window.onload = checkGesture;
