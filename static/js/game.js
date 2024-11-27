@@ -43,7 +43,7 @@ updateStep(currentStep);
 setInterval(() => {
     fetch('/check-hand').then(response => {
         if (response.status === 200) {
-            window.location.href = '/yoga';  // 감지되면 A 페이지로 이동
+            window.location.href = '/yoga';  // 감지되면  yoga페이지로 이동
         }
     });
 }, 1000);
