@@ -8,6 +8,7 @@ import json  # JSON 파일을 다루기 위한 모듈
 import numpy as np  # 배열 처리와 수학 연산을 위한 NumPy
 import time  # 시간 측정을 위한 모듈
 import os  # 운영체제 관련 기능을 위한 모듈
+import threading
 
 # Flask 앱 초기화
 app = Flask(__name__)  # Flask 애플리케이션 생성
@@ -27,7 +28,7 @@ face_mesh = mp_face_mesh.FaceMesh(
     static_image_mode=True,  # 정적 이미지 모드 활성화
     max_num_faces=1,         # 한 번에 최대 인식할 얼굴 수는 1
     refine_landmarks=True,   # 세밀한 랜드마크 활성화
-    min_detection_confidence=0.6  # 얼굴 감지 최소 신뢰도 설정
+    min_detection_confidence=0.5  # 얼굴 감지 최소 신뢰도 설정
 )
 
 pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)  # 자세 인식 모델 생성 (실시간 모드, 신뢰도 0.5)
@@ -310,6 +311,7 @@ def login():
                             break
 
                 if matching_user_id:
+                    session['user_id'] = matching_user_id  # 세션에 user_id 설정
                     cap.release()
                     return redirect(url_for('yoga', user_id=matching_user_id))  # yoga.html로 이동
 
@@ -325,22 +327,79 @@ def login():
     cv2.destroyAllWindows()
     return jsonify({"error": "Failed to login."})
 
+def is_finger_extended(finger_tip, finger_dip, palm_direction):
+    return finger_tip.y < finger_dip.y if palm_direction > 0 else finger_tip.y > finger_dip.y
+
+def is_hand_back_facing(wrist, middle_finger_base):
+    return wrist.z > middle_finger_base.z
+
+def is_three_fingers_extended(hand_landmarks):
+    wrist = hand_landmarks.landmark[0]
+    middle_finger_base = hand_landmarks.landmark[9]
+    palm_direction = 1 if is_hand_back_facing(wrist, middle_finger_base) else -1
+    
+    is_index_extended = is_finger_extended(hand_landmarks.landmark[8], hand_landmarks.landmark[6], palm_direction)
+    is_middle_extended = is_finger_extended(hand_landmarks.landmark[12], hand_landmarks.landmark[10], palm_direction)
+    is_ring_extended = is_finger_extended(hand_landmarks.landmark[16], hand_landmarks.landmark[14], palm_direction)
+    is_pinky_folded = not is_finger_extended(hand_landmarks.landmark[20], hand_landmarks.landmark[18], palm_direction)
+    
+    return is_index_extended and is_middle_extended and is_ring_extended and is_pinky_folded
+
+def webcam_thread():
+    """Webcam thread to detect gesture"""
+    global gesture_detected
+    cap = cv2.VideoCapture(0)  # Open the webcam
+    with mp_hands.Hands(model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
+        while not gesture_detected:
+            success, image = cap.read()
+            if not success:
+                continue
+            
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            results = hands.process(image)
+            
+            if results.multi_hand_landmarks:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    if is_three_fingers_extended(hand_landmarks):
+                        gesture_detected = True
+                        break
+            
+            if cv2.waitKey(1) & 0xFF == ord('q'):  # Allow manual quit with 'q'
+                break
+
+    cap.release()  # Release the webcam when done
+    cv2.destroyAllWindows()  # Close any OpenCV windows
+
+
 # 요가 페이지 렌더링
 @app.route('/yoga')
 def yoga():
-    if 'user_id' not in session:    #로그인 상태 확인
-        return redirect(url_for('main'))
-    user_id = session['user_id']    # 로그인 시 전달된 user_id를 받아옴
+    global gesture_detected
+    gesture_detected = False
+    threading.Thread(target=webcam_thread, daemon=True).start()
+    #user_id = request.args.get('user_id', 'Unknown')  # 로그인 시 전달된 user_id를 받아옴
+    user_id = session.get('user_id')  # 안전하게 세션에서 user_id 가져오기
+    if not user_id:
+        return redirect(url_for('main'))  # 세션이 없으면 main.html로 리다이렉트
     return render_template('yoga.html', user_id=user_id)
+
+@app.route('/check_gesture')
+def check_gesture():
+    if gesture_detected:
+        session.pop('user_id', None)  # 세션에서 user_id 제거 (로그아웃)
+        return redirect(url_for('main'))
+    return '', 204  # No Content
+
+@app.route('/main')
+def main():
+    return render_template('main.html')
+
 
 # 게임 페이지 렌더링
 @app.route('/game')
 def game():
     global hand_detected
     hand_detected = False  # 손바닥 감지 상태 초기화
-
-    if 'user_id' not in session:    #로그인 상태 확인
-        return redirect(url_for('main'))
     user_id = session['user_id']
     pose_name = os.path.basename(standard_pose_image_path).split('.')[0]
     return render_template('game.html', pose_name=pose_name, user_id=user_id)
@@ -469,7 +528,7 @@ def gen_yoga_frames():
         yield (b'--frame\r\n'  # 프레임 구분자
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # 프레임 데이터 전송
 
-    cap.release()  # 웹캠 릴리즈
+    #cap.release()  # 웹캠 릴리즈
 
 @app.route('/check-hand')
 def check_hand():
