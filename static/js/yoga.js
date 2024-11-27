@@ -64,29 +64,20 @@ function handleClick() {
     }
 }
 
-// 사용자에게 알림 메시지를 표시하고 3초 후에 자동으로 사라지게 하는 함수
-function showNotification(message) {
-    var notification = document.getElementById('notification');
-    var notificationText = document.getElementById('notificationText');
-    
-    notificationText.textContent = message;
-    notification.style.display = 'block';  // 알림 메시지 보이기
-
-    // 3초 후에 알림 메시지 숨기기
-    setTimeout(function() {
-        notification.style.display = 'none';
-    }, 3000);  // 3000ms = 3초
-}
-
-// 페이지가 로드될 때 초기화 작업 실행
-window.onload = function() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var userId = urlParams.get('user_id');
-
-    if (userId) {
-        showNotification(userId + '님 반갑습니다!');  // 사용자 환영 메시지 표시
-    }
-
-    document.getElementById('easyButton').style.backgroundColor = 'rgb(218, 218, 155)';
+// 초기 설정: 페이지 로드 시
+document.addEventListener('DOMContentLoaded', () => {
+    // 'easy' mode 로드
     showImages('easy');
-};
+
+    const buttons = document.querySelectorAll('.button');
+
+    buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        // 모든 버튼의 색상을 베이지로 변경
+        buttons.forEach(btn => btn.classList.remove('selected'));
+
+        // 클릭된 버튼에 selected 클래스 추가
+        button.classList.add('selected');
+        });
+    });
+});
