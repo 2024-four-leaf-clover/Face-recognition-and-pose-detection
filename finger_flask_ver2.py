@@ -1,5 +1,6 @@
 # Flask와 필요한 모듈들 가져오기
-from flask import Flask, render_template, Response, jsonify, request, redirect, url_for  # Flask 관련 모듈들 가져오기
+from flask import Flask, render_template, Response, jsonify, request, redirect, url_for, session  # Flask 관련 모듈들 가져오기
+import re
 import cv2  # OpenCV를 사용한 영상 처리
 import mediapipe as mp  # MediaPipe 라이브러리로 영상 처리
 import math  # 수학 연산을 위한 모듈
@@ -10,6 +11,7 @@ import os  # 운영체제 관련 기능을 위한 모듈
 
 # Flask 앱 초기화
 app = Flask(__name__)  # Flask 애플리케이션 생성
+app.secret_key = 'syc1205' #세션 암호화를 위한 비밀 키
 
 # MediaPipe 초기화
 mp_hands = mp.solutions.hands  # 손 인식 모델 초기화
@@ -25,7 +27,7 @@ face_mesh = mp_face_mesh.FaceMesh(
     static_image_mode=True,  # 정적 이미지 모드 활성화
     max_num_faces=1,         # 한 번에 최대 인식할 얼굴 수는 1
     refine_landmarks=True,   # 세밀한 랜드마크 활성화
-    min_detection_confidence=0.5  # 얼굴 감지 최소 신뢰도 설정
+    min_detection_confidence=0.6  # 얼굴 감지 최소 신뢰도 설정
 )
 
 pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)  # 자세 인식 모델 생성 (실시간 모드, 신뢰도 0.5)
@@ -142,11 +144,16 @@ def video_feed():
 # 사용자 등록 라우트
 @app.route('/register', methods=['POST'])  # '/register' 경로로 POST 요청이 오면 register 함수 실행
 def register():
-    data = request.get_json()  # 클라이언트로부터 받은 JSON 데이터 파싱
-    user_id = data.get('user_id')  # JSON에서 user_id 가져오기
+    user_id = request.json.get('user_id')    # JSON 데이터에서 user_id 추출
 
     if not user_id:  # user_id가 없으면
         return jsonify({"error": "아이디를 입력해야 합니다."}), 400  # 에러 메시지 반환
+    
+    # 유효성 검사: user_id가 비어 있거나 규칙에 맞지 않는 경우
+    if not user_id:
+        return jsonify({"error": "아이디를 입력해야 합니다."}), 400
+    if not re.match(r'^[a-zA-Z][a-zA-Z0-9]{5,}$', user_id):
+        return jsonify({"error": "아이디는 영어와 숫자의 조합으로 6자 이상이며, 첫 글자는 영어여야 합니다."}), 400
 
     cap = cv2.VideoCapture(0)  # 웹캠 열기
     frame_count = 0  # 프레임 카운터 초기화
@@ -157,8 +164,6 @@ def register():
     nose_chin_distances = []
     mouth_widths = []
     forehead_chin_distances = []
-    cheek_distances = []
-    nose_bridge_lengths = []
 
     while cap.isOpened():  # 웹캠이 열려 있을 동안 루프
         success, frame = cap.read()  # 프레임 읽기
@@ -179,9 +184,6 @@ def register():
                     left_mouth = face_landmarks.landmark[61]  # 왼쪽 입꼬리 좌표 추출
                     right_mouth = face_landmarks.landmark[291]  # 오른쪽 입꼬리 좌표 추출
                     forehead = face_landmarks.landmark[10]  # 이마 좌표 추출
-                    left_cheek = face_landmarks.landmark[234]  # 왼쪽 광대
-                    right_cheek = face_landmarks.landmark[454]  # 오른쪽 광대
-                    nose_bridge = face_landmarks.landmark[6]  # 콧대 중간 지점
 
                     # 여러 프레임에서 수집한 데이터 리스트에 저장
                     eye_distances.append(calculate_3d_distance(
@@ -204,16 +206,6 @@ def register():
                         (chin.x, chin.y, chin.z)
                     ))
 
-                    cheek_distances.append(calculate_3d_distance(
-                        (left_cheek.x, left_cheek.y, left_cheek.z),
-                        (right_cheek.x, right_cheek.y, right_cheek.z)
-                    ))
-
-                    nose_bridge_lengths.append(calculate_3d_distance(
-                        (nose_tip.x, nose_tip.y, nose_tip.z),
-                        (nose_bridge.x, nose_bridge.y, nose_bridge.z)
-                    ))
-
             if frame_count >= required_frames:  # 필요한 프레임 수에 도달하면 루프 종료
                 break
 
@@ -227,9 +219,7 @@ def register():
         "eye_distance": np.mean(eye_distances),
         "nose_chin_distance": np.mean(nose_chin_distances),
         "mouth_width": np.mean(mouth_widths),
-        "forehead_chin_distance": np.mean(forehead_chin_distances),
-        "cheek_distance": np.mean(cheek_distances),
-        "nose_bridge_length": np.mean(nose_bridge_lengths)
+        "forehead_chin_distance": np.mean(forehead_chin_distances)
     }
 
     try:
@@ -253,6 +243,8 @@ def register():
             face_data = {user_id: face_features}  # 새 데이터 작성
             json.dump(face_data, f, indent=4)  # 데이터를 예쁘게 출력하도록 설정
 
+    session['user_id'] = user_id    # 세션에 user_id 저장 (로그인 상태 유지)
+    
     return jsonify({"message": "아이디가 성공적으로 등록되었습니다.", "face_features": face_features}), 200  # 성공 메시지 반환
 
 # 로그인 처리 라우트
@@ -289,9 +281,6 @@ def login():
                     left_mouth = face_landmarks.landmark[61]
                     right_mouth = face_landmarks.landmark[291]
                     forehead = face_landmarks.landmark[10]
-                    left_cheek = face_landmarks.landmark[234]
-                    right_cheek = face_landmarks.landmark[454]
-                    nose_bridge = face_landmarks.landmark[6]
 
                     eye_distance = calculate_3d_distance(
                         (left_eye.x, left_eye.y, left_eye.z),
@@ -309,23 +298,13 @@ def login():
                         (forehead.x, forehead.y, forehead.z),
                         (chin.x, chin.y, chin.z)
                     )
-                    cheek_distance = calculate_3d_distance(
-                        (left_cheek.x, left_cheek.y, left_cheek.z),
-                        (right_cheek.x, right_cheek.y, right_cheek.z)
-                    )
-                    nose_bridge_length = calculate_3d_distance(
-                        (nose_tip.x, nose_tip.y, nose_tip.z),
-                        (nose_bridge.x, nose_bridge.y, nose_bridge.z)
-                    )
 
                     for user_id, user_data in face_data.items():
                         if (
                             abs(user_data.get('eye_distance') - eye_distance) < 0.03 and
                             abs(user_data.get('nose_chin_distance') - nose_chin_distance) < 0.03 and
                             abs(user_data.get('mouth_width') - mouth_width) < 0.03 and
-                            abs(user_data.get('forehead_chin_distance') - forehead_chin_distance) < 0.03 and
-                            abs(user_data.get('cheek_distance') - cheek_distance) < 0.03 and
-                            abs(user_data.get('nose_bridge_length') - nose_bridge_length) < 0.03  # 쉼표 삭제
+                            abs(user_data.get('forehead_chin_distance') - forehead_chin_distance) < 0.03
                         ):
                             matching_user_id = user_id
                             break
@@ -349,7 +328,9 @@ def login():
 # 요가 페이지 렌더링
 @app.route('/yoga')
 def yoga():
-    user_id = request.args.get('user_id', 'Unknown')  # 로그인 시 전달된 user_id를 받아옴
+    if 'user_id' not in session:    #로그인 상태 확인
+        return redirect(url_for('main'))
+    user_id = session['user_id']    # 로그인 시 전달된 user_id를 받아옴
     return render_template('yoga.html', user_id=user_id)
 
 # 게임 페이지 렌더링
@@ -357,7 +338,10 @@ def yoga():
 def game():
     global hand_detected
     hand_detected = False  # 손바닥 감지 상태 초기화
-    user_id = request.args.get('user_id', 'Unknown')  # Flask 요청에서 user_id를 가져옴 (디폴트는 'Unknown')
+
+    if 'user_id' not in session:    #로그인 상태 확인
+        return redirect(url_for('main'))
+    user_id = session['user_id']
     pose_name = os.path.basename(standard_pose_image_path).split('.')[0]
     return render_template('game.html', pose_name=pose_name, user_id=user_id)
 

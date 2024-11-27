@@ -50,7 +50,7 @@ function showImages(mode) {
 }
 
 // 이미지 클릭 시 실행되는 함수
-function handleClick() {
+/* function handleClick() {
     // 쿼리 매개변수에서 user_id를 가져오기
     var urlParams = new URLSearchParams(window.location.search);
     var userId = urlParams.get('user_id');  // user_id 가져오기
@@ -62,6 +62,9 @@ function handleClick() {
         // user_id가 없는 경우에도 이동하지만 기본값 처리 가능
         window.location.href = '/game';
     }
+} */
+function handleClick() {
+    window.location.href = '/game';  // 바로 game.html로 이동
 }
 
 // 초기 설정: 페이지 로드 시
