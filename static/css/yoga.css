@@ -71,12 +71,9 @@ body{
 .mode button{
     margin: 5px;
 }
-/* .mode button:hover{
+.button:hover{
     background-color: rgb(218, 218, 155);
-} */
-/* #easyButton.selected {
-    background-color: rgb(218, 218, 155);
-} */
+}
 .selected{
     background-color: rgb(218, 218, 155);
 }
