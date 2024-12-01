@@ -1,0 +1,105 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #f9f9f9;
+    height: 100vh;
+    /* .container 남은 공간 다 차지하기 위한 style 2줄 */
+    display: flex;
+    flex-direction: column;
+}
+.header{
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    padding: 10px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.logo{
+    /* border: 1px solid black; */
+    width: 5%;
+    height: auto;
+    margin-right: 5px;
+    margin-left: -15px;
+}
+.brand{
+    color: #939579;
+    font-weight: bold;
+    font-size: 20px;
+}
+.container{
+    margin-top: 10px;
+    padding: 10px 40px;
+    flex: 1;    /* with = body - .header */
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 50px;
+    padding: 40px;
+    background-color: #f9f9f9;
+}
+.box{
+    /* border: 1px solid blueviolet; */
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    /* padding: 20px 40px; */
+    height: auto;
+    margin: 0;
+}
+.main{
+    gap: 40px;
+}
+.main-box-top {
+    /* border: 1px solid black; */
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    align-items: center; /* 모든 자식 요소 세로 가운데 정렬 */
+    justify-items: center; /* 가로 기준 정렬 추가 (선택 사항) */
+    border-radius: 10px;
+    background-color: #f2f5c3;
+    padding: 20px;
+}
+.slogan-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 세로 가운데 정렬 */
+    gap: 10px; /* 문장 간격 추가 */
+}
+.slogan{
+    display: inline-block;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.slogan-explain{
+    font-size: 16px;
+}
+.yoga-img{
+    width: 100%;
+    height: auto;
+} 
+.main-box-bottom{
+    border: 1px solid black;
+    text-align: center;
+    height: 100%;
+}
+.right{
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+.white-box{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.title{
+    font-weight: bold;
+}

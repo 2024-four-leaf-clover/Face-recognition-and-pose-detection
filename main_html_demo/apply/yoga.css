@@ -1,0 +1,138 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #f9f9f9;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+.header{
+    display: flex; /* Flexbox 활성화 */
+    align-items: center; /* 세로 정렬 */
+    justify-content: space-between; /* 좌우로 요소를 배치 */
+    padding: 15px 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.header .logo-link {
+    display: flex; /* a 태그 안의 요소도 Flexbox 사용 */
+    align-items: center; /* a 태그 안에서 img를 세로 가운데 정렬 */
+    height: 100%; /* 부모 높이에 맞추기 */
+}
+.header .logo {
+    width: 60%;
+    height: auto;
+}
+.brand{
+    margin-left: -40px;
+    color: #a2a485;
+    font-weight: bold;
+    font-size: 20px;
+}
+.header .id_box {
+    margin-right: 40px;
+    margin-left: auto; /* 우측으로 밀어냄 */
+    text-align: right; /* 텍스트 우측 정렬 */
+}
+.nav{
+    padding: 40px 100px 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+.text-box{
+    border-radius: 10px;
+    text-align: center;
+    background-color: #f2f5c3;
+    gap: 10px;
+    padding: 20px 0;
+}
+.main_text{
+    font-size: 24px;
+    font-weight: bold;
+}
+.mode{
+    display: flex; /* Flexbox 활성화 */
+    align-items: center; /* 세로 정렬 */
+    justify-content: space-evenly;
+}
+Button{
+    background-color: #fff;
+}
+.button{
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    font-size: 18px;
+}
+.button:hover{
+    background-color: #a2a485;
+}
+.selected{
+    color: #fff;
+    background-color: #a2a485;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0; /* 패딩 제거 */
+    margin: 0; /* 추가 여백 제거 */
+    padding: 0 80px;
+}
+
+#gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3개의 컬럼 */
+    gap: 20px; /* 각 박스 간 간격 */
+    justify-items: center; /* 각 컬럼의 내용 가운데 정렬 */
+    align-items: center; /* 세로 정렬 기준 설정 */
+    margin-top: 20px;
+}
+
+/* 각 이미지와 라벨을 포함하는 전체 컨테이너 */
+.img-wrapper {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 기준으로 정렬 */
+    text-align: center;
+    height: 100%; /* 갤러리 세로 기준 */
+}
+
+/* 파일명 라벨 */
+.label-box {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color:#a2a485;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    margin-bottom: 10px; /* 이미지 박스와 간격 */
+    width: fit-content; /* 텍스트 크기에 맞춤 */
+}
+
+/* 이미지 박스 */
+.img-box {
+    background-color: #fff; /* 배경색 */
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    border-radius: 10px; /* 모서리 둥글게 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    padding: 10px;
+    width: fit-content; /* 이미지 크기에 맞춤 */
+    height: fit-content; /* 이미지 크기에 맞춤 */
+    min-height: 300px; /* 옆 박스 높이에 맞춰 세로 정렬 */
+}
+
+/* 이미지 */
+.img-box img {
+    display: block;
+    max-width: 100%; /* 이미지 비율 유지 */
+    height: auto; /* 세로 비율 유지 */
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>요가 선택</title>
+    <link rel="stylesheet" href="yoga.css">
+</head>
+<body>
+    <!-- banner -->
+    <div class="header">
+        <a href="#" class="logo-link">
+            <img src="../../static/img/logo.png" alt="logo" class="logo">
+        </a>
+        <p class="brand">Smart Yoga Club</p>
+        <div class="id_box">
+            <p><b>{{ user_id }}</b>님 환영합니다. 오늘 운동도 화이팅하세요!</p>
+        </div>
+    </div>
+    <div class="nav">
+        <div class="text-box">
+            <p class="main_text">직접 선택해서 운동해보세요!</p>
+            <p class="explain_text">종류와 난이도 선택 가능</p>
+        </div>
+        <div class="mode">
+            <button id="button-easy" class="button selected" onclick="showImages('easy')">쉬운 운동</button>
+            <button id="button-nor" class="button" onclick="showImages('normal')">보통 운동</button>
+            <button id="button-hard" class="button" onclick="showImages('hard')">어려운 운동</button>
+        </div>
+    </div>
+    <div class="container yoga">
+        <div class="yoga_img" id="gallery">
+            <!-- script - img -->
+        </div>
+    </div>
+    <script>
+        // 각 난이도별로 표시할 이미지 배열 설정
+        var easyImages = [
+            '../../static/yoga_posture/dataset/virabhadrasana i/4-0.png',
+            '../../static/yoga_posture/dataset/hanumanasana/6-0.png',
+            '../../static/yoga_posture/dataset/virabhadrasana i/4-0.png',
+            '../../static/yoga_posture/dataset/hanumanasana/6-0.png',
+            '../../static/yoga_posture/dataset/hanumanasana/6-0.png',
+            '../../static/yoga_posture/dataset/virabhadrasana i/4-0.png',
+            '../../static/yoga_posture/dataset/hanumanasana/6-0.png',
+            '../../static/yoga_posture/dataset/virabhadrasana i/4-0.png',
+            '../../static/yoga_posture/dataset/hanumanasana/6-0.png',
+            '../../static/yoga_posture/dataset/hanumanasana/6-0.png'
+        ];
+
+        var normalImages = [
+            '../../static/img/기초요가.jpeg',
+            '../../static/img/기초요가.jpeg',
+            '../../static/img/기초요가.jpeg'
+        ];
+
+        var hardImages = [
+            '../../static/img/다리찢기.jpeg',
+            '../../static/img/다리찢기.jpeg',
+            '../../static/img/다리찢기.jpeg'
+        ];
+
+        // 갤러리 컨테이너 요소를 선택
+        function showImages(mode) {
+    gallery.innerHTML = ''; // 기존 내용을 초기화
+
+    var images = [];
+    if (mode === 'easy') {
+        images = easyImages;
+    } else if (mode === 'normal') {
+        images = normalImages;
+    } else if (mode === 'hard') {
+        images = hardImages;
+    }
+
+    // 각 이미지를 박스에 넣어 표시
+    images.forEach(function (src) {
+        // 이미지 전체를 감쌀 컨테이너
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+
+        // 파일명 라벨 생성
+        var labelBox = document.createElement('div');
+        labelBox.className = 'label-box';
+        labelBox.textContent = src.split('/').pop().split('.')[0]; // 파일명 추출
+
+        // 이미지 박스 생성
+        var imgContainer = document.createElement('div');
+        imgContainer.className = 'img-box';
+
+        // 이미지 생성
+        var img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Yoga Pose';
+
+        // 컨테이너 구성
+        imgContainer.appendChild(img);
+        wrapper.appendChild(labelBox);
+        wrapper.appendChild(imgContainer);
+        gallery.appendChild(wrapper);
+    });
+}
+        
+        // 초기 설정: 페이지 로드 시
+        document.addEventListener('DOMContentLoaded', () => {
+            // 'easy' mode 로드
+            showImages('easy');
+
+            const buttons = document.querySelectorAll('.button');
+
+            buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 모든 버튼의 색상을 베이지로 변경
+                buttons.forEach(btn => btn.classList.remove('selected'));
+
+                // 클릭된 버튼에 selected 클래스 추가
+                button.classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
