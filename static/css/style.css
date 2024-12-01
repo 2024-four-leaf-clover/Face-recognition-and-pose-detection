@@ -2,101 +2,108 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Noto Sans KR'
 }
-
 body{
-    width: 100vw;
+    background-color: #f9f9f9;
     height: 100vh;
+    /* .container 남은 공간 다 차지하기 위한 style 2줄 */
+    display: flex;
+    flex-direction: column;
+}
+.header{
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    padding: 10px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.logo{
+    /* border: 1px solid black; */
+    width: 60%;
+    height: auto;
+    margin-right: 5px;
+    margin-left: -15px;
+}
+.brand{
+    color: #939579;
+    font-weight: bold;
+    font-size: 20px;
+}
+.container{
+    margin-top: 10px;
+    padding: 10px 40px;
+    flex: 1;    /* with = body - .header */
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 50px;
+    padding: 40px;
+    background-color: #f9f9f9;
+}
+.box{
+    /* border: 1px solid blueviolet; */
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    /* padding: 20px 40px; */
+    height: auto;
     margin: 0;
 }
-
-#container{
-    display: grid;
-    grid-template-rows: 100px 595px 50px;
-    background-color: beige;
-}
-
-.item{
-    display: flex;
-    justify-content: center;
+.main{
     align-items: center;
-}
-
-.nav{
-    display: grid;
-    grid-template-columns: 1fr 5.5fr 1fr;
-    background-color: white;
-}
-
-.nDiv{
     justify-content: center;
-    align-items: center;
 }
-
-#logo{
-    float: right;
-    object-fit: contain;
-}
-.content{
+.main-box-top {
+    /* border: 1px solid black; */
     display: grid;
-    grid-template-columns: 1fr 5.5fr 1fr;
+    grid-template-rows: 1fr 2fr;
+    gap: 40px;
 }
-
-.cCenter{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-}
-
-#ccGridL{
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    padding-left: 20px;
-}
-
-#tDivL{
-    display: flex;
-    align-items: self-end;
-}
-
-#mText{
-    font-weight: 400;
-    font-size: 45px;
-    margin: 0 0 10px 0;
-}
-
-#sText{
-    margin: 10px 0 0 0;
-}
-
-#ccGridR{
-    display: flex;
-    width: 120%;
-    justify-content: center;
-    align-items: center;
-}
-
-#posture {
-    width: 90%;
-    /* max-width: 400px; */
+.slogan-box {
+    /* border: 1px solid black; */
+    padding: 20px 40px;
     border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 세로 가운데 정렬 */
+    gap: 10px; /* 문장 간격 추가 */
+    background-color: #f2f5c3;
+}
+.slogan{
+    display: inline-block;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.slogan-explain{
+    font-size: 16px;
+}
+.yoga-img-box {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 두 개의 열로 구성 */
+    gap: 10px; /* 이미지 간격 추가 */
+}
+.yoga-img {
+    width: 100%; /* 부모 요소의 너비에 맞춤 */
+    height: 100%; /* 부모 요소의 높이에 맞춤 */
+    object-fit: contain; /* 이미지 비율을 유지하며 컨테이너 안에 맞춤 */
+    border-radius: 10px; /* 선택 사항 */
 }
 
-/* 알림 메시지 스타일 */
-#notification {
-    display: none;
-    position: fixed;
-    top: 20px; /* 화면의 맨 위에서 20px 아래에 위치 */
-    left: 50%; /* 화면의 가로 중앙에 위치 */
-    transform: translateX(-50%); /* 요소의 가로 크기만큼 반 이동하여 가로 정렬 */
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 1000;
-    font-family: 'Noto Sans KR', sans-serif;
+.right{
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }
-
-
+.white-box{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.title{
+    font-weight: bold;
+}
