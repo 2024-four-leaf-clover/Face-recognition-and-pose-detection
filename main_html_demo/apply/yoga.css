@@ -47,12 +47,12 @@ body{
     border-radius: 10px;
     text-align: center;
     background-color: #f2f5c3;
-    gap: 10px;
     padding: 20px 0;
 }
 .main_text{
     font-size: 24px;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 .mode{
     display: flex; /* Flexbox 활성화 */
@@ -88,7 +88,7 @@ Button{
 #gallery {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3개의 컬럼 */
-    gap: 20px; /* 각 박스 간 간격 */
+    gap: 60px; /* 각 박스 간 간격 */
     justify-items: center; /* 각 컬럼의 내용 가운데 정렬 */
     align-items: center; /* 세로 정렬 기준 설정 */
     margin-top: 20px;
@@ -133,6 +133,6 @@ Button{
 /* 이미지 */
 .img-box img {
     display: block;
-    max-width: 100%; /* 이미지 비율 유지 */
+    max-width: 80%; /* 이미지 비율 유지 */
     height: auto; /* 세로 비율 유지 */
 }
