@@ -6,26 +6,28 @@
 body{
     background-color: #f9f9f9;
     height: 100vh;
-    /* .container 남은 공간 다 차지하기 위한 style 2줄 */
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 .header{
-    /* border: 1px solid black; */
     display: flex;
     align-items: center;
-    padding: 10px 40px;
+    padding: 15px 20px;
+    background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-.logo{
-    /* border: 1px solid black; */
-    width: 5%;
+.header .logo-link {
+    display: flex; /* a 태그 안의 요소도 Flexbox 사용 */
+    align-items: center; /* a 태그 안에서 img를 세로 가운데 정렬 */
+    height: 100%; /* 부모 높이에 맞추기 */
+}
+.header .logo {
+    width: 60%;
     height: auto;
-    margin-right: 5px;
-    margin-left: -15px;
 }
 .brand{
-    color: #939579;
+    margin-left: -40px;
+    color: #b9bc98;
     font-weight: bold;
     font-size: 20px;
 }
@@ -49,23 +51,24 @@ body{
     margin: 0;
 }
 .main{
-    gap: 40px;
+    align-items: center;
+    justify-content: center;
 }
 .main-box-top {
     /* border: 1px solid black; */
     display: grid;
-    grid-template-columns: 3fr 1fr;
-    align-items: center; /* 모든 자식 요소 세로 가운데 정렬 */
-    justify-items: center; /* 가로 기준 정렬 추가 (선택 사항) */
-    border-radius: 10px;
-    background-color: #f2f5c3;
-    padding: 20px;
+    grid-template-rows: 1fr 2fr;
+    gap: 40px;
 }
 .slogan-box {
+    /* border: 1px solid black; */
+    padding: 20px 40px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center; /* 세로 가운데 정렬 */
     gap: 10px; /* 문장 간격 추가 */
+    background-color: #f2f5c3;
 }
 .slogan{
     display: inline-block;
@@ -76,15 +79,18 @@ body{
 .slogan-explain{
     font-size: 16px;
 }
-.yoga-img{
-    width: 100%;
-    height: auto;
-} 
-.main-box-bottom{
-    border: 1px solid black;
-    text-align: center;
-    height: 100%;
+.yoga-img-box {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 두 개의 열로 구성 */
+    gap: 10px; /* 이미지 간격 추가 */
 }
+.yoga-img {
+    width: 100%; /* 부모 요소의 너비에 맞춤 */
+    height: 100%; /* 부모 요소의 높이에 맞춤 */
+    object-fit: contain; /* 이미지 비율을 유지하며 컨테이너 안에 맞춤 */
+    border-radius: 10px; /* 선택 사항 */
+}
+
 .right{
     align-items: center;
     justify-content: center;
