@@ -6,26 +6,28 @@
 body{
     background-color: #f9f9f9;
     height: 100vh;
-    /* .container 남은 공간 다 차지하기 위한 style 2줄 */
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 .header{
-    /* border: 1px solid black; */
     display: flex;
     align-items: center;
-    padding: 10px 40px;
+    padding: 15px 20px;
+    background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-.logo{
-    /* border: 1px solid black; */
+.header .logo-link {
+    display: flex; /* a 태그 안의 요소도 Flexbox 사용 */
+    align-items: center; /* a 태그 안에서 img를 세로 가운데 정렬 */
+    height: 100%; /* 부모 높이에 맞추기 */
+}
+.header .logo {
     width: 60%;
     height: auto;
-    margin-right: 5px;
-    margin-left: -15px;
 }
 .brand{
-    color: #939579;
+    margin-left: -40px;
+    color: #b9bc98;
     font-weight: bold;
     font-size: 20px;
 }
